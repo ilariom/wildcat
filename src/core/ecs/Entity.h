@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "ComponentsVector.h"
 #include "Drawable.h"
+#include "Multiset.h"
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -17,6 +18,7 @@ class Entity final
 {
 public:
     using EntityUniqueID = unsigned long;
+    using iterator = wkt::utils::Multiset<Component::ComponentTypeID>::iterator;
 
 public:
     Entity();
@@ -43,6 +45,7 @@ public:
         }
 
         this->components[get_type_id<C>()].push_back(std::static_pointer_cast<Component>(comp));
+        this->multiset.insert(get_type_id<C>());
 
         if(is_drawable<C>())
         {
@@ -78,6 +81,8 @@ public:
     }
 
     std::vector<std::shared_ptr<Drawable>>& drawables() { return this->drws; }
+    iterator begin() { return this->multiset.begin(); }
+    iterator end() { return this->multiset.end(); }
 
 private:
     void removeDrawable(const Component& drw);
@@ -87,6 +92,7 @@ private:
     using MapOfComps = std::unordered_map<Component::ComponentTypeID, ComponentsVector<>>;
     MapOfComps components;
     std::vector<std::shared_ptr<Drawable>> drws;
+    wkt::utils::Multiset<Component::ComponentTypeID> multiset;
 };
 
 }}

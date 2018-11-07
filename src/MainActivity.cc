@@ -30,7 +30,7 @@ namespace wkt {
 namespace components
 {
 
-REGISTER_COMPONENT(Mover, get_type_id<Script>());
+REGISTER_SCRIPT(Mover);
 
 }}
 

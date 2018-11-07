@@ -25,6 +25,8 @@ Entity::Entity(const Entity& en)
             this->components[id].back()->setEntity(this);
         });
     }
+
+    this->multiset = en.multiset;
 }
 
 Entity& Entity::operator-=(const Component& comp)
@@ -34,7 +36,7 @@ Entity& Entity::operator-=(const Component& comp)
 
 Entity& Entity::remove(Component::ComponentUniqueID uid)
 {
-    for(auto&p : this->components)
+    for(auto& p : this->components)
     {
         ComponentsVector<>& vec = p.second;
         std::vector<ComponentsVector<>::iterator> its;
@@ -48,6 +50,7 @@ Entity& Entity::remove(Component::ComponentUniqueID uid)
             (*it)->setEntity(nullptr);
             removeDrawable(**it);
             vec.erase(it);
+            this->multiset.erase(static_cast<const Component::ComponentTypeID>(p.first));
         }
     }
 
