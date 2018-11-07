@@ -13,7 +13,7 @@ SystemsManager& SystemsManager::operator+=(std::unique_ptr<wkt::ecs::System> sys
 void SystemsManager::run(wkt::components::Node& node)
 {
     std::for_each(this->systems.begin(), this->systems.end(), [&node] (std::unique_ptr<wkt::ecs::System>& sys) mutable {
-        if(!sys->isComponentOperation())
+        if(sys->isHierarchical())
             sys->applyRule(node);
     });
 }
@@ -21,7 +21,7 @@ void SystemsManager::run(wkt::components::Node& node)
 void SystemsManager::run(typename EntityManager::iterator begin, typename EntityManager::iterator end)
 {
     std::for_each(this->systems.begin(), this->systems.end(), [&begin, &end] (std::unique_ptr<wkt::ecs::System>& sys) mutable {
-        if(sys->isComponentOperation())
+        if(!sys->isHierarchical())
             sys->applyRule(begin, end);
     });
 }

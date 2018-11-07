@@ -8,7 +8,7 @@
 #include "core/components/Sprite.h"
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
-#include "core/systems/script_system.h"
+#include "core/systems/ScriptSystem.h"
 #include <memory>
 
 class Mover : public wkt::components::Script
@@ -78,7 +78,7 @@ void MainActivity::onStart()
     auto mover = std::make_shared<Mover>();
     two += mover;
 
-    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::ecs::System>(wkt::systems::script_system::makeSystem());
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::ecs::System>(wkt::systems::ScriptSystem::makeSystem());
     
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");

@@ -12,70 +12,61 @@ namespace wkt {
 namespace ecs
 {
 
+class SystemDelegate
+{
+public:
+    virtual void init() = 0;
+    virtual void step(std::shared_ptr<Component>) = 0;
+    virtual bool step(wkt::components::Node&) { return false; }
+    virtual void shutdown() = 0;
+
+    virtual bool isHierarchical() { return false; }
+};
+
 class System
 {
 public:
-    using CompOp = std::function<void(std::shared_ptr<Component>&)>;
-    using NodeOp = std::function<bool(wkt::components::Node&)>;
-    using UtilsOp = std::function<void(void)>;
-
-public:
     System() = default;
-    System(wkt::ecs::Component::ComponentTypeID typeId) : typeId(typeId) { }
+    System(wkt::ecs::Component::ComponentTypeID typeId, std::unique_ptr<SystemDelegate> delegate) 
+        : typeId(typeId), delegate(std::move(delegate))
+    { }
 
 public:
 
     void applyRule(typename wkt::managers::EntityManager::iterator begin, typename wkt::managers::EntityManager::iterator end)
     {
-        if(!this->compOp)
-            return;
-
-        if(this->kickstarter)
-            this->kickstarter();
+        this->delegate->init();
 
         for(auto it = begin; it != end; ++it)
         {
             auto& p = *it;
             auto vec = p.second.query(this->typeId);
 
-            std::for_each(vec.begin(), vec.end(), this->compOp);
+            std::for_each(vec.begin(), vec.end(), [this] (std::shared_ptr<Component>& comp) {
+                this->delegate->step(comp);
+            });
         }
 
-        if(this->shutdown)
-            this->shutdown;
+       this->delegate->shutdown();
     }
 
     void applyRule(wkt::components::Node& root)
     {
-        if(!this->nodeOp)
-            return;
+        this->delegate->init();
 
-        if(this->kickstarter)
-            this->kickstarter();
+        root.visit([this] (wkt::components::Node& node) {
+            return this->delegate->step(node);
+        });
 
-        root.visit(this->nodeOp);
-
-        if(this->shutdown)
-            this->shutdown;
+        this->delegate->shutdown();
     }
 
-    void setComponentOperation(CompOp op) { this->compOp = op; }
-    void setNodeOperation(NodeOp op) { this->nodeOp = op; }
-
-    void setInitializer(UtilsOp op) { this->kickstarter = op; }
-    void setFinalizer(UtilsOp op) { this->shutdown = op; }
-
-    bool isComponentOperation() const { return this->compOp != nullptr; }
-
-protected:
     Component::ComponentTypeID getTypeId() const { return this->typeId; }
+    bool isHierarchical() const { return this->delegate->isHierarchical(); }
 
 private:
+    std::unique_ptr<SystemDelegate> delegate;
     Component::ComponentTypeID typeId;
-    CompOp compOp = nullptr;
-    NodeOp nodeOp = nullptr;
-    UtilsOp kickstarter = nullptr;
-    UtilsOp shutdown = nullptr;
 };
 
 }}

@@ -5,8 +5,8 @@
 #include "components/Node.h"
 #include "globals/Director.h"
 #include "core/graphics/SurfaceCache.h"
-#include "systems/render_system.h"
-#include "systems/transform_update_system.h"
+#include "systems/RenderSystem.h"
+#include "systems/TransformUpdateSystem.h"
 #include <memory>
 
 namespace wkt {
@@ -42,9 +42,9 @@ private:
 
 inline SceneGraph::SceneGraph()
 { 
-    this->system = wkt::systems::render_system::makeSystem();
+    this->system = wkt::systems::RenderSystem::makeSystem();
     auto& sm = systemsManager();
-    sm += std::make_unique<wkt::ecs::System>(wkt::systems::transform_update_system::makeSystem());
+    sm += std::make_unique<wkt::ecs::System>(wkt::systems::TransformUpdateSystem::makeSystem());
 }
 
 inline void SceneGraph::runAllSystems()
