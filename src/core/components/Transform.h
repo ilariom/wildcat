@@ -51,6 +51,12 @@ public:
     float getScaleY() const { return this->local.scaleY; }
     float getScale() const { assert(getScaleX() == getScaleY()); return getScaleX(); }
 
+    void addPosition(const wkt::math::vec2& moveBy) { setPosition(getPosition() + moveBy); }
+    void addRotation(float rotateBy) { setRotation(getRotation() + rotateBy); }
+    void addScaleX(float x) { setScaleX(getScaleX() + x); }
+    void addScaleY(float y) { setScaleY(getScaleY() + y); }
+    void addScale(float s) { setScale(getScale() + s); }
+
     inline Transform& operator*=(const Transform& other);
     inline Transform& invert();
 

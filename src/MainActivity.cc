@@ -31,7 +31,7 @@ public:
         auto entity = getEntity();
         auto transform = entity->query<wkt::components::Transform>();
         auto t = *transform;
-        t->setPosition(t->getPosition() + wkt::math::vec2 { 1, 0 });
+        t->addPosition(wkt::math::vec2 { 5, 0 });
     }
 };
 
@@ -85,7 +85,7 @@ void MainActivity::onStart()
     auto mover = std::make_shared<Mover>();
     two += mover;
 
-    scene->getDefaultSceneGraph().systemsManager().addSequential(wkt::ecs::make_seq_system<wkt::systems::ScriptSystem>());
+    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
 
     wkt::Director::getInstance().runScene(scene);
