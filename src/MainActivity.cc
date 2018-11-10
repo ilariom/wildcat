@@ -55,7 +55,7 @@ void MainActivity::onStart()
     auto& entity = scene->getDefaultSceneGraph().entityManager().make();
     auto node = std::make_shared<wkt::components::Node>();
     auto transform = std::make_shared<wkt::components::Transform>();
-    transform->setPosition({ 200, 100 });
+    transform->setPosition({ 400, 100 });
     transform->setScale(.5f);
     transform->setRotation(45);
     auto sprite = std::make_shared<wkt::components::Sprite>("preview.png");
@@ -76,7 +76,7 @@ void MainActivity::onStart()
     auto mover = std::make_shared<Mover>();
     two += mover;
 
-    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::ecs::System>(wkt::systems::ScriptSystem::makeSystem());
+    scene->getDefaultSceneGraph().systemsManager().addSequential(wkt::ecs::make_seq_system<wkt::systems::ScriptSystem>());
     
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");

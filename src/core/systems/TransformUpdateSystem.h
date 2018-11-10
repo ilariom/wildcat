@@ -8,18 +8,13 @@ namespace wkt {
 namespace systems
 {
 
-class TransformUpdateSystem : public wkt::ecs::SystemDelegate
+class TransformUpdateSystem : public wkt::ecs::HierarchicalSystem
 {
 public:
-    static wkt::ecs::System makeSystem();
+    TransformUpdateSystem();
 
 public:
-    void init() override { }
-    void step(std::shared_ptr<wkt::ecs::Component>) override { }
-    bool step(wkt::components::Node&) override;
-    void shutdown() override { }
-
-    bool isHierarchical() override { return true; }
+    bool operator()(wkt::components::Node&);
 };
 
 }}

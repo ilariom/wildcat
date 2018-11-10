@@ -36,15 +36,15 @@ public:
 
 private:
     std::shared_ptr<wkt::components::Node> node;
-    wkt::ecs::System system;
+    std::unique_ptr<wkt::systems::RenderSystem> renderSystem;
     bool active = true;
 };
 
 inline SceneGraph::SceneGraph()
 { 
-    this->system = wkt::systems::RenderSystem::makeSystem();
+    this->renderSystem = std::make_unique<wkt::systems::RenderSystem>();
     auto& sm = systemsManager();
-    sm += std::make_unique<wkt::ecs::System>(wkt::systems::TransformUpdateSystem::makeSystem());
+    sm.addHierarchical(std::make_unique<wkt::systems::TransformUpdateSystem>());
 }
 
 inline void SceneGraph::runAllSystems()
@@ -65,7 +65,8 @@ inline void SceneGraph::render()
     if(!root() || !isActive())
         return;
 
-    this->system.applyRule(*root());
+    this->renderSystem->bindRoot(*root());
+    this->renderSystem->run();
 }
 
 }}

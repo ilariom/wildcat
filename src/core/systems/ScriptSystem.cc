@@ -1,7 +1,4 @@
 #include "ScriptSystem.h"
-#include "components/Script.h"
-#include "ecs/Entity.h"
-#include "ecs/Component.h"
 #include <chrono>
 
 using namespace wkt::ecs;
@@ -11,9 +8,13 @@ namespace wkt {
 namespace systems
 {
 
-void ScriptSystem::step(std::shared_ptr<Component> c)
+ScriptSystem::ScriptSystem()
 {
-    auto sc = comp_cast<Script>(c);
+    bindHandler(*this);
+}
+
+void ScriptSystem::operator()(std::shared_ptr<wkt::components::Script> sc)
+{
     auto now = std::chrono::high_resolution_clock::now();
     Script::time_point zeroTime(Script::duration(0));
 
@@ -29,13 +30,6 @@ void ScriptSystem::step(std::shared_ptr<Component> c)
     }
     
     sc->setLastTimePoint(now);
-}
-
-System ScriptSystem::makeSystem()
-{
-    auto typeId = get_type_id<Script>();
-    System system(typeId, std::make_unique<ScriptSystem>());
-    return system;
 }
 
 }}

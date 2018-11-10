@@ -25,13 +25,15 @@ public:
     SystemsManager& operator=(SystemsManager&&) = default;
 
 public:
-    SystemsManager& operator+=(std::unique_ptr<wkt::ecs::System> sys);
-
+    SystemsManager& addSequential(std::unique_ptr<wkt::ecs::System> sys) { this->systems.push_back(std::move(sys)); return *this; }
+    SystemsManager& addHierarchical(std::unique_ptr<wkt::ecs::HierarchicalSystem> hsys) { this->hSystems.push_back(std::move(hsys)); return *this; }
+    
     void run(wkt::components::Node& node);
     void run(typename EntityManager::iterator begin, typename EntityManager::iterator);
 
 private:
     std::vector<std::unique_ptr<wkt::ecs::System>> systems;
+    std::vector<std::unique_ptr<wkt::ecs::HierarchicalSystem>> hSystems;
 };
 
 }}

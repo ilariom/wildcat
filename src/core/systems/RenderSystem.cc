@@ -12,7 +12,12 @@ namespace wkt {
 namespace systems
 {
 
-bool RenderSystem::step(Node& node)
+RenderSystem::RenderSystem()
+{
+    bindHandler(*this);
+}
+
+bool RenderSystem::operator()(wkt::components::Node& node)
 {
     Entity* entity = node.getEntity();
 
@@ -37,12 +42,6 @@ bool RenderSystem::step(Node& node)
     });
     
     return true;
-}
-
-System RenderSystem::makeSystem()
-{
-    System system(get_type_id<Node>(), std::make_unique<RenderSystem>());
-    return system;
 }
 
 }}

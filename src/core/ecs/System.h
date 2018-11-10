@@ -5,69 +5,64 @@
 #include "Component.h"
 #include "components/Node.h"
 #include "managers/EntityManager.h"
-#include <algorithm>
+#include "utils/recursors.h"
 #include <unordered_map>
+#include <memory>
 
 namespace wkt {
 namespace ecs
 {
 
-class SystemDelegate
+class System : public wkt::utils::AbstractRecursor
 {
 public:
-    virtual void init() = 0;
-    virtual void step(std::shared_ptr<Component>) = 0;
-    virtual bool step(wkt::components::Node&) { return false; }
-    virtual void shutdown() = 0;
+    virtual ~System() = default;
 
-    virtual bool isHierarchical() { return false; }
+public:
+    virtual void init() { }
+    virtual void shutdown() { }
 };
 
-class System
+class HierarchicalSystem : public System, public wkt::utils::HierarchicalRecursor<wkt::components::Node, bool>
 {
 public:
-    System() = default;
-    System(wkt::ecs::Component::ComponentTypeID typeId, std::unique_ptr<SystemDelegate> delegate) 
-        : typeId(typeId), delegate(std::move(delegate))
-    { }
+    void run() override;
+};
 
+template<typename C = Component>
+class SequentialSystem : public System, public wkt::utils::SequentialRecursor<std::shared_ptr<C>, wkt::managers::EntityManager::iterator, void>
+{
 public:
-
-    void applyRule(typename wkt::managers::EntityManager::iterator begin, typename wkt::managers::EntityManager::iterator end)
+    void run() override
     {
-        this->delegate->init();
+        using rec = wkt::utils::SequentialRecursor<std::shared_ptr<C>, wkt::managers::EntityManager::iterator, void>;
+
+        typename rec::handler handler = this->getHandler();
+        typename rec::iterator begin = this->begin();
+        typename rec::iterator end = this->end();
+
+        init();
 
         for(auto it = begin; it != end; ++it)
         {
             auto& p = *it;
-            auto vec = p.second.query(this->typeId);
+            Entity& en = p.second;
+            ComponentsVector<C> vec = en.query<C>();
 
-            std::for_each(vec.begin(), vec.end(), [this] (std::shared_ptr<Component>& comp) {
-                this->delegate->step(comp);
-            });
-        }
+            for(std::shared_ptr<Component>& c : vec)
+                handler(std::static_pointer_cast<C>(c));
+        }   
 
-       this->delegate->shutdown();
+        shutdown();
     }
-
-    void applyRule(wkt::components::Node& root)
-    {
-        this->delegate->init();
-
-        root.visit([this] (wkt::components::Node& node) {
-            return this->delegate->step(node);
-        });
-
-        this->delegate->shutdown();
-    }
-
-    Component::ComponentTypeID getTypeId() const { return this->typeId; }
-    bool isHierarchical() const { return this->delegate->isHierarchical(); }
-
-private:
-    std::unique_ptr<SystemDelegate> delegate;
-    Component::ComponentTypeID typeId;
 };
+
+template<typename S, typename... Args>
+std::unique_ptr<System> make_seq_system(Args... args)
+{
+    auto sys = std::make_unique<S>(std::forward(args)...);
+    return std::unique_ptr<System>(static_cast<System*>(sys.release()));
+}
 
 }}
 

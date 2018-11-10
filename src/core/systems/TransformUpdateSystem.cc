@@ -10,7 +10,12 @@ namespace wkt {
 namespace systems
 {
 
-bool TransformUpdateSystem::step(Node& node)
+TransformUpdateSystem::TransformUpdateSystem()
+{
+    bindHandler(*this);
+}
+
+bool TransformUpdateSystem::operator()(Node& node)
 {
     auto getTransform = [] (const Node& n) -> std::shared_ptr<Transform> {
         Entity* entity = n.getEntity();
@@ -30,19 +35,13 @@ bool TransformUpdateSystem::step(Node& node)
     if(!node.hasParent())
         return true;
 
-    auto& parent = *node.getParent();
-    auto parentTransform = getTransform(parent);
-    auto nodeTransform = getTransform(node);
+    const Node& parent = *node.getParent();
+    std::shared_ptr<Transform> parentTransform = getTransform(parent);
+    std::shared_ptr<Transform> nodeTransform = getTransform(node);
 
     nodeTransform->setParentCoordinates(parentTransform->getWorldCoordinates());
 
     return true;
-}
-
-System TransformUpdateSystem::makeSystem()
-{
-    System system(get_type_id<Node>(), std::make_unique<TransformUpdateSystem>());
-    return system;
 }
 
 }}

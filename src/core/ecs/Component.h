@@ -20,9 +20,12 @@ public:
 
 public:
     Component();
-    Component(const Component&) = default;
+    Component(const Component&);
     Component(Component&&) = default;
     virtual ~Component() = default;
+
+    Component& operator=(const Component&);
+    Component& operator=(Component&&) = default;
 
 public:
     ComponentUniqueID getUID() const { return this->id; }

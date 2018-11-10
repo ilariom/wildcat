@@ -2,21 +2,19 @@
 #define _WKT_SCRIPT_SYSTEM_H
 
 #include "ecs/System.h"
+#include "components/Script.h"
 
 namespace wkt {
 namespace systems
 {
 
-class ScriptSystem : public wkt::ecs::SystemDelegate
+class ScriptSystem : public wkt::ecs::SequentialSystem<wkt::components::Script>
 {
 public:
-    static wkt::ecs::System makeSystem();
+    ScriptSystem();
 
 public:
-    void init() override { }
-    void step(std::shared_ptr<wkt::ecs::Component>) override;
-    bool step(wkt::components::Node&) override { }
-    void shutdown() override { }
+    void operator()(std::shared_ptr<wkt::components::Script>);
 };
 
 }}
