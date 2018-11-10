@@ -31,6 +31,11 @@ void EntityManager::kill(const Entity& en)
     kill(en.getUID());
 }
 
+void EntityManager::gain(Entity&& en)
+{
+    this->entities[en.getUID()] = std::move(en);
+}
+
 Entity* EntityManager::operator[](Entity::EntityUniqueID id)
 {
     if(this->entities.find(id) == this->entities.end())

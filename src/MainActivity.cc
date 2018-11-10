@@ -57,7 +57,6 @@ void MainActivity::onStart()
     auto transform = std::make_shared<wkt::components::Transform>();
     transform->setPosition({ 200, 100 });
     transform->setScale(.5f);
-    // transform->setLocalOrigin({ 50, 0 });
     transform->setRotation(45);
     auto sprite = std::make_shared<wkt::components::Sprite>("preview.png");
     entity += node;
@@ -69,7 +68,6 @@ void MainActivity::onStart()
     auto twon = std::make_shared<wkt::components::Node>();
     node->appendChild(twon);
     auto twot = std::make_shared<wkt::components::Transform>();
-    //twot->setPosition({ sprite->size().width * .5f, sprite->size().height * .5f });
     twot->setScale(.25f);
     twot->setRotation(-45);
     auto twos = std::make_shared<wkt::components::Sprite>("ninja.png");

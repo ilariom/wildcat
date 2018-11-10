@@ -84,18 +84,4 @@ void Entity::removeDrawable(const Component& drw)
 
     this->drws.erase(drwit); 
 }
-
-// ComponentsVector Entity::query(Component::ComponentTypeID typeId) const
-// {
-//     ComponentsVector vec;
-
-//     if(this->components.find(typeId) != this->components.end())
-//     {
-//         const ComponentsVector& cv = this->components.at(typeId);
-//         vec = cv;
-//     }
-
-//     return vec;
-// }
-
 }}

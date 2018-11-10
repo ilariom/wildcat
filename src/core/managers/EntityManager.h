@@ -30,6 +30,7 @@ public:
     Entity& make();
     void kill(Entity::EntityUniqueID id);
     void kill(const Entity& en);
+    void gain(Entity&& en);
 
     Entity* operator[](Entity::EntityUniqueID id);
 

@@ -78,6 +78,14 @@ void mainLoop()
 
             renderer.present();
 
+            // clean destroyed entities
+            
+            world.entityManager().clean();
+            runningScene.entityManager().clean();
+
+            for(auto& sceneGraph : runningScene)
+                sceneGraph.entityManager().clean();
+
             timeLapse = std::chrono::high_resolution_clock::now() - begin;
 
             if(timeLapse < frameRate)
