@@ -37,11 +37,11 @@ public:
     {
         using rec = wkt::utils::SequentialRecursor<std::shared_ptr<C>, wkt::managers::EntityManager::iterator, void>;
 
-        typename rec::handler handler = this->getHandler();
+        typename rec::handler& hnd = this->getHandler();
         typename rec::iterator begin = this->begin();
         typename rec::iterator end = this->end();
 
-        init();
+        this->init();
 
         for(auto it = begin; it != end; ++it)
         {
@@ -49,11 +49,11 @@ public:
             Entity& en = p.second;
             ComponentsVector<C> vec = en.query<C>();
 
-            for(std::shared_ptr<Component>& c : vec)
-                handler(std::static_pointer_cast<C>(c));
+            for(std::shared_ptr<Component> c : vec)
+                hnd(std::static_pointer_cast<C>(c));
         }   
 
-        shutdown();
+        this->shutdown();
     }
 };
 

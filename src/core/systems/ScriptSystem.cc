@@ -10,7 +10,7 @@ namespace systems
 
 ScriptSystem::ScriptSystem()
 {
-    bindHandler(*this);
+    bindHandler(std::bind(&ScriptSystem::operator(), this, std::placeholders::_1));
 }
 
 void ScriptSystem::operator()(std::shared_ptr<wkt::components::Script> sc)

@@ -12,7 +12,7 @@ namespace systems
 
 TransformUpdateSystem::TransformUpdateSystem()
 {
-    bindHandler(*this);
+    bindHandler(std::bind(&TransformUpdateSystem::operator(), this, std::placeholders::_1));
 }
 
 bool TransformUpdateSystem::operator()(Node& node)

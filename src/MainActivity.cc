@@ -9,14 +9,23 @@
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
 #include "core/systems/ScriptSystem.h"
+#include "core/systems/MessageSystem.h"
 #include <memory>
 
 class Mover : public wkt::components::Script
 {
 public:
-    void init() override { s2x::log("INIT!"); scheduleUpdate(); }
-    void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { }
-    void onPoke(int poke, const wkt::ecs::Entity& sender) override { }
+    void init() override 
+    { 
+        s2x::log("INIT!");
+        auto msg = makeMessage();
+        msg.write("TEST MESSAGE");
+        msg.sendTo(getEntity()->getUID());
+        sendMessage(msg);
+        scheduleUpdate();
+    }
+
+    void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
     void update(duration dt) override
     {
         auto entity = getEntity();
@@ -77,7 +86,8 @@ void MainActivity::onStart()
     two += mover;
 
     scene->getDefaultSceneGraph().systemsManager().addSequential(wkt::ecs::make_seq_system<wkt::systems::ScriptSystem>());
-    
+    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
+
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");
 }

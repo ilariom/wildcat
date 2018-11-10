@@ -14,7 +14,7 @@ namespace systems
 
 RenderSystem::RenderSystem()
 {
-    bindHandler(*this);
+    bindHandler(std::bind(&RenderSystem::operator(), this, std::placeholders::_1));
 }
 
 bool RenderSystem::operator()(wkt::components::Node& node)

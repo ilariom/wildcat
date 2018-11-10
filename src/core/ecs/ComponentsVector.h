@@ -30,7 +30,7 @@ public:
     ComponentsVector<C>& operator=(ComponentsVector<D>&& other)
     {
         using vect = std::vector<std::shared_ptr<Component>>;
-        *static_cast<vect*>(this) = std::move(*static_cast<const vect*>(&other))    ;
+        *static_cast<vect*>(this) = std::move(*static_cast<const vect*>(&other));
     }
 };
 
