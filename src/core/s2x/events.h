@@ -6,6 +6,7 @@
 #include <functional>
 #include <vector>
 #include <algorithm>
+#include <initializer_list>
 
 namespace s2x
 {
@@ -31,7 +32,8 @@ public:
     void push(SDL_Event& ev) { SDL_PushEvent(&ev); }
     void userInput() { while(poll()); }
 
-    void addListener(EventType t, const EventListener &l) { this->listeners[t].push_back(l); }
+    void addListener(EventType t, const EventListener& l) { this->listeners[t].push_back(l); }
+    inline void addListener(std::initializer_list<EventType> events, const EventListener& l);
     inline void removeListener(EventType t, const EventListener& l);
 
 private:
@@ -58,6 +60,12 @@ inline bool EventManager::poll()
     std::for_each(vec.begin(), vec.end(), [this] (const EventListener& el) {
         el.handler(cachedEvent);
     });
+}
+
+inline void EventManager::addListener(std::initializer_list<EventType> events, const EventListener& l)
+{
+    for(EventType t : events)
+        addListener(t, l);
 }
 
 inline void EventManager::removeListener(EventType t, const EventListener& l)

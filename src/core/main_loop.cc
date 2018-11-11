@@ -8,6 +8,7 @@
 #include "globals/World.h"
 #include "globals/Scene.h"
 #include "graphics/TextureCache.h"
+#include "input/KeyboardListener.h"
 #include <chrono>
 #include <thread>
 #include <cmath>
@@ -17,6 +18,7 @@ namespace wkt
 {
 
 constexpr int QUIT_LISTENER_TAG = -1;
+constexpr int KEYBOARD_LISTENER_TAG = -2; 
 
 void mainLoop()
 {
@@ -52,7 +54,18 @@ void mainLoop()
         };
 
         em.addListener(SDL_QUIT, el);
+
+        wkt::events::KeyboardListener kl;
+        em.addListener({ SDL_KEYDOWN, SDL_KEYUP }, {
+            KEYBOARD_LISTENER_TAG,
+            [&kl] (const SDL_Event& ev) mutable {
+                kl(ev);
+            }
+        });
+
         wkt::Director& director = wkt::Director::getInstance();
+        director.setKeyboardListener(kl);
+
         mainActivity.onStart();
 
         while(!quit)

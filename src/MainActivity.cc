@@ -8,6 +8,8 @@
 #include "core/components/Sprite.h"
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
+#include "core/components/KeyboardEvent.h"
+#include "core/systems/KeyboardEventSystem.h"
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
 #include <memory>
@@ -29,9 +31,35 @@ public:
     void update(duration dt) override
     {
         auto entity = getEntity();
+        auto keyboardEvent = entity->query<wkt::components::KeyboardEvent>();
         auto transform = entity->query<wkt::components::Transform>();
         auto t = *transform;
-        t->addPosition(wkt::math::vec2 { 5, 0 });
+
+        auto v = (*keyboardEvent)->consume();
+
+        float x = 0, y = 0;
+
+        for(auto& ev : v)
+            switch(ev.code)
+            {
+                case SDLK_LEFT:
+                    x -= 10;
+                    break;
+
+                case SDLK_RIGHT:
+                    x += 10;
+                    break;
+
+                case SDLK_UP:
+                    y -= 10;
+                    break;
+
+                case SDLK_DOWN:
+                    y += 10;
+                    break;
+            }
+
+        t->addPosition({ x, y });
     }
 };
 
@@ -85,8 +113,11 @@ void MainActivity::onStart()
     auto mover = std::make_shared<Mover>();
     two += mover;
 
+    two += std::make_shared<wkt::components::KeyboardEvent>();
+
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
+    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::KeyboardEventSystem>());
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");
