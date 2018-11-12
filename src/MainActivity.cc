@@ -13,6 +13,7 @@
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
 #include "core/components/Dictionary.h"
+#include "core/components/Table.h"
 #include <memory>
 
 class Mover : public wkt::components::Script
@@ -121,6 +122,15 @@ void MainActivity::onStart()
     dict["two"] = 2;
 
     two += wkt::components::make_abstract_dictionary_from(dict);
+
+    using MyScheme = wkt::components::Scheme<std::string, int, double>;
+    MyScheme sch("my_scheme");
+    sch.update("Arnold", 1, 2.3);
+    sch.update("Arnold", 2, 2.3);
+    sch.update("Sly", 2, 2.3);
+    auto&& res = sch.selectWhere<0>("Arnold");
+
+    two += wkt::components::make_table_from_scheme(sch);
 
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
