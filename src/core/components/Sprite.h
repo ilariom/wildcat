@@ -16,6 +16,7 @@ public:
     Sprite(const std::string& filename) : ss(filename) { }
 
 public:
+    bool unique() const override;
     void draw(s2x::Renderer&, const Transform&) override;
     wkt::math::Size size() const { return this->ss.size(); }
 

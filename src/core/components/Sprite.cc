@@ -4,6 +4,11 @@ namespace wkt {
 namespace components
 {
 
+bool Sprite::unique() const
+{
+    return false;
+}
+
 void Sprite::draw(s2x::Renderer& renderer, const Transform& transform)
 {
     auto& texture = ss.getTexture();

@@ -12,6 +12,7 @@
 #include "core/systems/KeyboardEventSystem.h"
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
+#include "core/components/Dictionary.h"
 #include <memory>
 
 class Mover : public wkt::components::Script
@@ -114,6 +115,12 @@ void MainActivity::onStart()
     two += mover;
 
     two += std::make_shared<wkt::components::KeyboardEvent>();
+
+    wkt::components::Dictionary<std::string, int> dict;
+    dict["one"] = 1;
+    dict["two"] = 2;
+
+    two += wkt::components::make_abstract_dictionary_from(dict);
 
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
