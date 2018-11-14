@@ -49,8 +49,12 @@ s2x::Texture& SmartSurface::getTexture()
 
 void SmartSurface::copyOnWrite()
 {
+    if(this->isAlreadyCloned)
+        return;
+    
     this->surfaceModified = true;
     this->surface = std::make_shared<s2x::Surface>(*(this->surface));
+    this->isAlreadyCloned = true;
 }
 
 }}

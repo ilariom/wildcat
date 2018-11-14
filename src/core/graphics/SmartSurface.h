@@ -35,6 +35,7 @@ private:
     std::shared_ptr<s2x::Surface> surface;
     std::shared_ptr<s2x::Texture> texture;
     bool surfaceModified = false;
+    bool isAlreadyCloned = false;
     std::string filename;
 };
 

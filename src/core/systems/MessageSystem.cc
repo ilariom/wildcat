@@ -34,7 +34,7 @@ void MessageSystem::shutdown()
                 for(std::shared_ptr<Component> comp : scripts)
                 {
                     auto sc = std::static_pointer_cast<Script>(comp);
-                    sc->onMessage(msg.read(), *entity);
+                    sc->onMessage(msg.read(), msg.sender());
                 }
             }
 

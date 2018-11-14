@@ -25,7 +25,7 @@ class Dictionary : public AbstractDictionary, public std::unordered_map<key_type
 template<typename key_type, typename mapped_type, typename key_hasher>
 Dictionary<key_type, mapped_type, key_hasher>& getDictionary(AbstractDictionary& ad)
 {
-    return *static_cast<Dictionary<key_type, mapped_type, key_hasher> *>(&ad);
+    return *static_cast<Dictionary<key_type, mapped_type, key_hasher>*>(&ad);
 }
 
 template<typename key_type, typename mapped_type, typename key_hasher>
