@@ -1,5 +1,5 @@
 #include "KeyboardEventSystem.h"
-#include "globals/Director.h"
+#include "input/InputManager.h"
 
 using namespace wkt::ecs;
 using namespace wkt::components;
@@ -16,19 +16,19 @@ KeyboardEventSystem::KeyboardEventSystem()
 
 void KeyboardEventSystem::init()
 {
-    KeyboardListener* kl = Director::getInstance().getKeyboardListener();
+    KeyboardProxy* kl = InputManager::getInstance().getKeyboardProxy();
 
     if(!kl)
         return;
 
-    KeyboardListener& eventsStream = *kl;
+    KeyboardProxy& eventsStream = *kl;
     KeyboardEventType ket;
 
     while(eventsStream >> ket)
         this->events.push_back(std::move(ket));
 }
 
-void KeyboardEventSystem::operator()(std::shared_ptr<wkt::components::KeyboardEvent> ke)
+void KeyboardEventSystem::operator()(std::shared_ptr<wkt::components::KeyboardReceiver> ke)
 {
     ke->addKeys(this->events);
 }

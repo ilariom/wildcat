@@ -25,7 +25,7 @@ struct KeyboardEventTypeHasher
     }
 };
 
-class KeyboardListener
+class KeyboardProxy
 {
 public:
     void operator()(const SDL_Event& ev)

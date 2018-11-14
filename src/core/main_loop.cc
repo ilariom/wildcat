@@ -4,11 +4,12 @@
 #include "s2x/basics.h"
 #include "s2x/video.h"
 #include "s2x/events.h"
+#include "input/InputManager.h"
 #include "globals/Director.h"
 #include "globals/World.h"
 #include "globals/Scene.h"
 #include "graphics/TextureCache.h"
-#include "input/KeyboardListener.h"
+#include "input/KeyboardProxy.h"
 #include <chrono>
 #include <thread>
 #include <cmath>
@@ -18,7 +19,7 @@ namespace wkt
 {
 
 constexpr int QUIT_LISTENER_TAG = -1;
-constexpr int KEYBOARD_LISTENER_TAG = -2; 
+constexpr int KEYBOARD_PROXY_TAG = -2; 
 
 void mainLoop()
 {
@@ -55,16 +56,18 @@ void mainLoop()
 
         em.addListener(SDL_QUIT, el);
 
-        wkt::events::KeyboardListener kl;
+        wkt::events::KeyboardProxy kl;
         em.addListener({ SDL_KEYDOWN, SDL_KEYUP }, {
-            KEYBOARD_LISTENER_TAG,
+            KEYBOARD_PROXY_TAG,
             [&kl] (const SDL_Event& ev) mutable {
                 kl(ev);
             }
         });
 
+        wkt::events::InputManager& im = wkt::events::InputManager::getInstance();
+        im.setKeyboardProxy(&kl);
+        
         wkt::Director& director = wkt::Director::getInstance();
-        director.setKeyboardListener(kl);
 
         mainActivity.onStart();
 

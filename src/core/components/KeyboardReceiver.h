@@ -2,14 +2,14 @@
 #define _WKT_KEYBOARD_EVENT_H
 
 #include "ecs/Component.h"
-#include "input/KeyboardListener.h"
+#include "input/KeyboardProxy.h"
 #include <vector>
 
 namespace wkt {
 namespace components
 {
 
-class KeyboardEvent : public wkt::ecs::Component
+class KeyboardReceiver : public wkt::ecs::Component
 {
 public:
     std::vector<wkt::events::KeyboardEventType>&& consume() { return std::move(this->keys); }
@@ -19,7 +19,7 @@ private:
     std::vector<wkt::events::KeyboardEventType> keys;
 };
 
-REGISTER_COMPONENT(KeyboardEvent, -5);
+REGISTER_COMPONENT(KeyboardReceiver, -5);
 
 }}
 

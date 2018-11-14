@@ -8,7 +8,7 @@
 #include "core/components/Sprite.h"
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
-#include "core/components/KeyboardEvent.h"
+#include "core/components/KeyboardReceiver.h"
 #include "core/systems/KeyboardEventSystem.h"
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
@@ -33,7 +33,7 @@ public:
     void update(duration dt) override
     {
         auto entity = getEntity();
-        auto keyboardEvent = entity->query<wkt::components::KeyboardEvent>();
+        auto keyboardEvent = entity->query<wkt::components::KeyboardReceiver>();
         auto transform = entity->query<wkt::components::Transform>();
         auto t = *transform;
 
@@ -115,7 +115,7 @@ void MainActivity::onStart()
     auto mover = std::make_shared<Mover>();
     two += mover;
 
-    two += std::make_shared<wkt::components::KeyboardEvent>();
+    two += std::make_shared<wkt::components::KeyboardReceiver>();
 
     wkt::components::Dictionary<std::string, int> dict;
     dict["one"] = 1;

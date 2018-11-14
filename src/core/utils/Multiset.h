@@ -26,9 +26,9 @@ public:
     };
 
 public:
-    inline void insert(T&& elem);
-    inline void erase(T&& elem);
-    inline bool has(T&& elem);
+    inline void insert(const T& elem);
+    inline void erase(const T& elem);
+    inline bool has(const T& elem);
 
     iterator begin() { return iterator(this->data.begin()); }
     iterator end() { return iterator(this->data.end()); }
@@ -38,7 +38,7 @@ private:
 };
 
 template<typename T, typename H>
-inline void Multiset<T, H>::insert(T&& elem)
+inline void Multiset<T, H>::insert(const T& elem)
 {
     if(this->data.find(elem) == this->data.end())
     {
@@ -49,7 +49,7 @@ inline void Multiset<T, H>::insert(T&& elem)
 }
 
 template<typename T, typename H>
-inline void Multiset<T, H>::erase(T&& elem)
+inline void Multiset<T, H>::erase(const T& elem)
 {
     if(this->data.find(elem) == this->data.end())
         return;
@@ -61,7 +61,7 @@ inline void Multiset<T, H>::erase(T&& elem)
 }
 
 template<typename T, typename H>
-inline bool Multiset<T, H>::has(T&& elem)
+inline bool Multiset<T, H>::has(const T& elem)
 {
     return this->data.find(elem) != this->data.end();
 }
