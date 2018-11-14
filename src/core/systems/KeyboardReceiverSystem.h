@@ -10,10 +10,10 @@ namespace wkt {
 namespace systems
 {
 
-class KeyboardEventSystem : public wkt::ecs::SequentialSystem<wkt::components::KeyboardReceiver>
+class KeyboardReceiverSystem : public wkt::ecs::SequentialSystem<wkt::components::KeyboardReceiver>
 {
 public:
-    KeyboardEventSystem();
+    KeyboardReceiverSystem();
 
 public:
     virtual void init() override;

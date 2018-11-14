@@ -102,6 +102,8 @@ void mainLoop()
             for(auto& sceneGraph : runningScene)
                 sceneGraph.entityManager().clean();
 
+            kl.close();
+
             timeLapse = std::chrono::high_resolution_clock::now() - begin;
 
             if(timeLapse < frameRate)

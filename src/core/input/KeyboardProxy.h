@@ -12,6 +12,7 @@ struct KeyboardEventType
 {
     Uint32 eventType;
     SDL_Keycode code;
+    SDL_Scancode scancode;
     Uint16 modifier;
     Uint8 state;
     bool repeat;
@@ -33,6 +34,7 @@ public:
         KeyboardEventType ket = {
             ev.type,
             ev.key.keysym.sym,
+            ev.key.keysym.scancode,
             ev.key.keysym.mod,
             ev.key.state,
             ev.key.repeat != 0
@@ -51,6 +53,8 @@ public:
 
         return true;
     }
+
+    void close() { this->events.clear(); }
 
 private:
     std::list<KeyboardEventType> events;

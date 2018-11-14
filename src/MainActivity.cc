@@ -9,7 +9,7 @@
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
 #include "core/components/KeyboardReceiver.h"
-#include "core/systems/KeyboardEventSystem.h"
+#include "core/systems/KeyboardReceiverSystem.h"
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
 #include "core/components/Dictionary.h"
@@ -136,7 +136,7 @@ void MainActivity::onStart()
 
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
     scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
-    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::KeyboardEventSystem>());
+    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::KeyboardReceiverSystem>());
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");
