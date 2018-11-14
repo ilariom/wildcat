@@ -29,52 +29,35 @@ template<typename... types>
 class Scheme : public Table
 {
 public:
-    class Scheme_ref
-    {
-    public:
-        Scheme_ref(const std::string& name) : name(name) { }
-
-    public:
-        Scheme_ref& operator+=(std::tuple<types...>* t) { relation.push_back(t); return *this; }
-        size_t size() const { return this->relation.size(); }
-        std::tuple<types...>& operator[](size_t k) { return *this->relation[k]; }
-
-        const std::string& getName() const { return this->name; }
-
-    private:
-        std::vector<std::tuple<types...>*> relation;
-        std::string name;
-    };
-
-public:
-    friend class Scheme_ref;
-
-public:
     Scheme(const std::string& name) : Table(name) { }
-    Scheme(Scheme_ref&& sr) : Table(sr.getName())
-    {
-        for(int k = 0; k < sr.size(); ++k)
-            this->relation.push_back(sr[k]);
-    }
-    Scheme(const Scheme&) = default;
+    inline Scheme(const Scheme&);
+    Scheme(Scheme&&) = default;
 
+    inline Scheme& operator=(const Scheme&);
+    Scheme& operator=(Scheme&&) = default;
+public:
     inline void update(types... vals);
     inline void remove(types... vals);
 
+    Scheme& operator+=(const std::tuple<types...>& t) { this->relation.push_back(t); return *this; }
+    inline std::tuple<types...>& operator[](size_t n);
+
     template<int N>
-    Scheme_ref selectWhere(typename std::tuple_element<N, std::tuple<types...>>::type value)
+    Scheme selectWhere(typename std::tuple_element<N, std::tuple<types...>>::type value)
     {
-        Scheme_ref sr(getName());
+        Scheme sr(getName());
+        sr.schemeRef = this->schemeRef == nullptr ? this : this->schemeRef;
 
         for(auto& t : this->relation)
             if(std::get<N>(t) == value)
-                sr += &t;
+                sr += t;
 
         return sr;
     }
 
 private:
     std::vector<std::tuple<types...>> relation;
+    Scheme<types...>* schemeRef = nullptr;
 };
 
 template<typename... types>
@@ -92,6 +75,36 @@ inline void Scheme<types...>::remove(types... vals)
 
     if(it != this->relation.end())
         this->relation.erase(it);
+}
+
+template<typename... types>
+inline Scheme<types...>::Scheme(const Scheme& sch)
+{
+    this->relation = sch.relation;
+    this->schemeRef = nullptr;
+}
+
+template<typename... types>
+inline Scheme<types...>& Scheme<types...>::operator=(const Scheme& sch)
+{
+    this->relation = sch.relation;
+    this->schemeRef = nullptr;
+    return *this;
+}
+
+template<typename... types>
+inline std::tuple<types...>& Scheme<types...>::operator[](size_t n)
+{
+    if(this->schemeRef)
+    {
+        auto t = this->relation[n];
+
+        for(auto& v : this->schemeRef->relation)
+            if(v == t)
+                return v;
+    }
+
+    return this->relation[n];
 }
 
 template<typename... types>

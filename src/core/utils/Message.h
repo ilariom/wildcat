@@ -32,7 +32,7 @@ public:
 
     void write(T&& content) { this->content = content; }
     const T& read() const { return this->content; }
-    const Entity& sender() const { return this->sdr; }
+    const Entity& sender() const { return *this->sdr; }
     inline bool isReceiver(const Entity& rcv) const;
 
 private:

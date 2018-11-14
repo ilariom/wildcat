@@ -128,7 +128,9 @@ void MainActivity::onStart()
     sch.update("Arnold", 1, 2.3);
     sch.update("Arnold", 2, 2.3);
     sch.update("Sly", 2, 2.3);
-    auto&& res = sch.selectWhere<0>("Arnold");
+    auto res = sch.selectWhere<0>("Arnold").selectWhere<1>(2);
+    auto& t = res[0];
+    std::get<0>(t) = "John Matrix";
 
     two += wkt::components::make_table_from_scheme(sch);
 
