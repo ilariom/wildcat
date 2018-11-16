@@ -8,7 +8,7 @@
 #include "core/components/Sprite.h"
 #include "core/components/Transform.h"
 #include "core/components/Script.h"
-#include "core/components/KeyboardReceiver.h"
+#include "core/components/KeyboardEventReceiver.h"
 #include "core/systems/KeyboardReceiverSystem.h"
 #include "core/systems/ScriptSystem.h"
 #include "core/systems/MessageSystem.h"
@@ -27,6 +27,32 @@ public:
         msg.sendTo(getEntity()->getUID());
         sendMessage(msg);
         scheduleUpdate();
+
+        auto& entity = *getEntity();
+
+        auto ker = std::make_shared<wkt::components::KeyboardEventReceiver>();
+        ker->onKeyPressed = [&entity] (const wkt::events::KeyboardEventType& ket) {
+            auto& dict = *std::static_pointer_cast<wkt::components::Dictionary<std::string, float>>(*entity.query<wkt::components::AbstractDictionary>());
+            dict["x"] = 0;
+            dict["y"] = 0;
+            constexpr float step = 10;
+            const Uint8* keyboardStateArray = SDL_GetKeyboardState(NULL);
+
+            if(keyboardStateArray[SDL_SCANCODE_UP])
+                dict["y"] -= step;
+            else if(keyboardStateArray[SDL_SCANCODE_DOWN])
+                dict["y"] += step;
+
+            if(keyboardStateArray[SDL_SCANCODE_LEFT])
+                dict["x"] -= step;
+            else if(keyboardStateArray[SDL_SCANCODE_RIGHT])
+                dict["x"] += step;
+        };
+
+        ker->onKeyDown = ker->onKeyPressed;
+        ker->onKeyUp = ker->onKeyPressed;
+
+        entity += ker;
     }
 
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
@@ -37,31 +63,14 @@ public:
         auto transform = entity->query<wkt::components::Transform>();
         auto t = *transform;
 
-        auto v = (*keyboardEvent)->consume();
-
-        float x = 0, y = 0;
-
-        for(auto& ev : v)
-            switch(ev.code)
-            {
-                case SDLK_LEFT:
-                    x -= 10;
-                    break;
-
-                case SDLK_RIGHT:
-                    x += 10;
-                    break;
-
-                case SDLK_UP:
-                    y -= 10;
-                    break;
-
-                case SDLK_DOWN:
-                    y += 10;
-                    break;
-            }
+        auto& dict = *std::static_pointer_cast<wkt::components::Dictionary<std::string, float>>(*entity->query<wkt::components::AbstractDictionary>());
+        float x = dict["x"];
+        float y = dict["y"];
 
         t->addPosition({ x, y });
+
+        dict["x"] = 0;
+        dict["y"] = 0;
     }
 };
 
@@ -114,29 +123,12 @@ void MainActivity::onStart()
 
     auto mover = std::make_shared<Mover>();
     two += mover;
-
-    two += std::make_shared<wkt::components::KeyboardReceiver>();
-
-    wkt::components::Dictionary<std::string, int> dict;
-    dict["one"] = 1;
-    dict["two"] = 2;
-
+    wkt::components::Dictionary<std::string, float> dict;
     two += wkt::components::make_abstract_dictionary_from(dict);
 
-    using MyScheme = wkt::components::Scheme<std::string, int, double>;
-    MyScheme sch("my_scheme");
-    sch.update("Arnold", 1, 2.3);
-    sch.update("Arnold", 2, 2.3);
-    sch.update("Sly", 2, 2.3);
-    auto res = sch.selectWhere<0>("Arnold").selectWhere<1>(2);
-    auto& t = res[0];
-    std::get<0>(t) = "John Matrix";
-
-    two += wkt::components::make_table_from_scheme(sch);
-
-    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::ScriptSystem>());
-    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::MessageSystem>());
-    scene->getDefaultSceneGraph().systemsManager().addSequential(std::make_unique<wkt::systems::KeyboardReceiverSystem>());
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MessageSystem>();
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::KeyboardEventReceiverSystem>();
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");

@@ -29,8 +29,11 @@ public:
     void run() override;
 };
 
+class SequentialSystemBase : public System { };
+
 template<typename C = Component>
-class SequentialSystem : public System, public wkt::utils::SequentialRecursor<std::shared_ptr<C>, wkt::managers::EntityManager::iterator, void>
+class SequentialSystem : public SequentialSystemBase, 
+                         public wkt::utils::SequentialRecursor<std::shared_ptr<C>, wkt::managers::EntityManager::iterator, void>
 {
 public:
     void run() override

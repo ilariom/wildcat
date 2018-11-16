@@ -44,7 +44,7 @@ inline SceneGraph::SceneGraph()
 { 
     this->renderSystem = std::make_unique<wkt::systems::RenderSystem>();
     auto& sm = systemsManager();
-    sm.addHierarchical(std::make_unique<wkt::systems::TransformUpdateSystem>());
+    sm += std::make_unique<wkt::systems::TransformUpdateSystem>();
 }
 
 inline void SceneGraph::runAllSystems()
