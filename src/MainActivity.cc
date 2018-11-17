@@ -16,9 +16,13 @@
 #include "core/components/Table.h"
 #include "core/components/MouseReceiver.h"
 #include "core/systems/MouseReceiverSystem.h"
+#include "core/components/ActionReceiver.h"
+#include "core/systems/ActionReceiverSystem.h"
+#include "core/input/InputManager.h"
 #include <memory>
 
 using namespace wkt::components;
+using namespace wkt::events;
 
 class Mover : public Script
 {
@@ -31,12 +35,24 @@ public:
         transform->setScale(.25f);
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
-        mouseRecv->onButton = [this, transform] (const wkt::events::MouseButtonEvent& ev) {
+        mouseRecv->onButton = [this] (const wkt::events::MouseButtonEvent& ev) {
             s2x::log("CLICK");
-            transform->setPosition({ev.x, ev.y});
+            auto& ab = InputManager::getInstance().getActionBroadcaster();
+            ab.postAction({
+                "move!",
+                {}
+            });
         };
 
         entity += mouseRecv;
+
+        auto actionRecv = std::make_shared<ActionReceiver>();
+        actionRecv->onAction = [this, transform] (const Action& action) {
+            transform->addPosition({ 20, 0 });
+        };
+
+        actionRecv->filters.push_back("move!");
+        entity += actionRecv;
     }
 
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
@@ -82,6 +98,7 @@ void MainActivity::onStart()
     
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ActionReceiverSystem>();
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");

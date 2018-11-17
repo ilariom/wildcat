@@ -11,6 +11,7 @@
 #include "graphics/TextureCache.h"
 #include "input/KeyboardProxy.h"
 #include "input/MouseProxy.h"
+#include "input/ActionBroadcaster.h"
 #include <chrono>
 #include <thread>
 #include <cmath>
@@ -77,6 +78,8 @@ void mainLoop()
         wkt::events::InputManager& im = wkt::events::InputManager::getInstance();
         im.setKeyboardProxy(&kl);
         im.setMouseProxy(&mp);
+
+        wkt::events::ActionBroadcaster& actionBroadcaster = im.getActionBroadcaster();
         
         wkt::Director& director = wkt::Director::getInstance();
 
@@ -89,6 +92,7 @@ void mainLoop()
             em.userInput();
 
             // systems
+
             world.runComponentSystems();
             auto& runningScene = director.getRunningScene();
             runningScene.runComponentSystems();
@@ -113,8 +117,11 @@ void mainLoop()
             for(auto& sceneGraph : runningScene)
                 sceneGraph.entityManager().clean();
 
+            // clear input buffers
+
             kl.close();
             mp.close();
+            actionBroadcaster.close();
 
             timeLapse = std::chrono::high_resolution_clock::now() - begin;
 

@@ -3,6 +3,7 @@
 
 #include "KeyboardProxy.h"
 #include "MouseProxy.h"
+#include "ActionBroadcaster.h"
 
 namespace wkt {
 namespace events
@@ -27,10 +28,13 @@ public:
     void setMouseProxy(MouseProxy* proxy) { this->mouseProxy = proxy; }
     MouseProxy* getMouseProxy() const { return this->mouseProxy; }
 
+    ActionBroadcaster& getActionBroadcaster() { return this->ab; }
+
 private:
     InputManager() = default;
     KeyboardProxy* keyboardProxy = nullptr;
     MouseProxy* mouseProxy = nullptr;
+    ActionBroadcaster ab;
 };
 
 inline InputManager& InputManager::getInstance()
