@@ -14,63 +14,35 @@
 #include "core/systems/MessageSystem.h"
 #include "core/components/Dictionary.h"
 #include "core/components/Table.h"
+#include "core/components/MouseReceiver.h"
+#include "core/systems/MouseReceiverSystem.h"
 #include <memory>
 
-class Mover : public wkt::components::Script
+using namespace wkt::components;
+
+class Mover : public Script
 {
 public:
     void init() override 
     { 
         s2x::log("INIT!");
-        auto msg = makeMessage();
-        msg.write("TEST MESSAGE");
-        msg.sendTo(getEntity()->getUID());
-        sendMessage(msg);
-        scheduleUpdate();
-
         auto& entity = *getEntity();
+        auto transform = *entity.query<Transform>();
+        transform->setScale(.25f);
 
-        auto ker = std::make_shared<wkt::components::KeyboardEventReceiver>();
-        ker->onKeyPressed = [&entity] (const wkt::events::KeyboardEventType& ket) {
-            auto& dict = *std::static_pointer_cast<wkt::components::Dictionary<std::string, float>>(*entity.query<wkt::components::AbstractDictionary>());
-            dict["x"] = 0;
-            dict["y"] = 0;
-            constexpr float step = 10;
-            const Uint8* keyboardStateArray = SDL_GetKeyboardState(NULL);
-
-            if(keyboardStateArray[SDL_SCANCODE_UP])
-                dict["y"] -= step;
-            else if(keyboardStateArray[SDL_SCANCODE_DOWN])
-                dict["y"] += step;
-
-            if(keyboardStateArray[SDL_SCANCODE_LEFT])
-                dict["x"] -= step;
-            else if(keyboardStateArray[SDL_SCANCODE_RIGHT])
-                dict["x"] += step;
+        auto mouseRecv = std::make_shared<MouseReceiver>();
+        mouseRecv->onButton = [this, transform] (const wkt::events::MouseButtonEvent& ev) {
+            s2x::log("CLICK");
+            transform->setPosition({ev.x, ev.y});
         };
 
-        ker->onKeyDown = ker->onKeyPressed;
-        ker->onKeyUp = ker->onKeyPressed;
-
-        entity += ker;
+        entity += mouseRecv;
     }
 
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
     void update(duration dt) override
     {
-        auto entity = getEntity();
-        auto keyboardEvent = entity->query<wkt::components::KeyboardReceiver>();
-        auto transform = entity->query<wkt::components::Transform>();
-        auto t = *transform;
-
-        auto& dict = *std::static_pointer_cast<wkt::components::Dictionary<std::string, float>>(*entity->query<wkt::components::AbstractDictionary>());
-        float x = dict["x"];
-        float y = dict["y"];
-
-        t->addPosition({ x, y });
-
-        dict["x"] = 0;
-        dict["y"] = 0;
+       
     }
 };
 
@@ -101,34 +73,15 @@ void MainActivity::onStart()
 {
     auto scene = std::make_shared<wkt::scene::Scene>();
     auto& entity = scene->getDefaultSceneGraph().entityManager().make();
-    auto node = std::make_shared<wkt::components::Node>();
-    auto transform = std::make_shared<wkt::components::Transform>();
-    transform->setPosition({ 400, 100 });
-    transform->setScale(.5f);
-    transform->setRotation(45);
-    auto sprite = std::make_shared<wkt::components::Sprite>("preview.png");
+    auto node = std::make_shared<Node>();
     entity += node;
-    entity += transform;
-    entity += sprite;
+    entity += std::make_shared<Transform>();
+    entity += std::make_shared<Sprite>("ninja.png");
+    entity += std::make_shared<Mover>();
     scene->getDefaultSceneGraph().setRoot(node);
-
-    auto& two = scene->getDefaultSceneGraph().entityManager().make();
-    auto twon = std::make_shared<wkt::components::Node>();
-    node->appendChild(twon);
-    auto twot = std::make_shared<wkt::components::Transform>();
-    twot->setScale(.25f);
-    twot->setRotation(-45);
-    auto twos = std::make_shared<wkt::components::Sprite>("ninja.png");
-    ((two += twon) += twot) += twos;
-
-    auto mover = std::make_shared<Mover>();
-    two += mover;
-    wkt::components::Dictionary<std::string, float> dict;
-    two += wkt::components::make_abstract_dictionary_from(dict);
-
+    
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
-    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MessageSystem>();
-    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::KeyboardEventReceiverSystem>();
+    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");

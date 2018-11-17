@@ -10,6 +10,7 @@
 #include "globals/Scene.h"
 #include "graphics/TextureCache.h"
 #include "input/KeyboardProxy.h"
+#include "input/MouseProxy.h"
 #include <chrono>
 #include <thread>
 #include <cmath>
@@ -20,6 +21,7 @@ namespace wkt
 
 constexpr int QUIT_LISTENER_TAG = -1;
 constexpr int KEYBOARD_PROXY_TAG = -2; 
+constexpr int MOUSE_PROXY_TAG = -3;
 
 void mainLoop()
 {
@@ -64,8 +66,17 @@ void mainLoop()
             }
         });
 
+        wkt::events::MouseProxy mp;
+        em.addListener({ SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL }, {
+            MOUSE_PROXY_TAG,
+            [&mp] (const SDL_Event& ev) mutable {
+                mp(ev);
+            }
+        });
+
         wkt::events::InputManager& im = wkt::events::InputManager::getInstance();
         im.setKeyboardProxy(&kl);
+        im.setMouseProxy(&mp);
         
         wkt::Director& director = wkt::Director::getInstance();
 
@@ -103,6 +114,7 @@ void mainLoop()
                 sceneGraph.entityManager().clean();
 
             kl.close();
+            mp.close();
 
             timeLapse = std::chrono::high_resolution_clock::now() - begin;
 

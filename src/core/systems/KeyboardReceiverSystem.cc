@@ -46,11 +46,11 @@ KeyboardEventReceiverSystem::KeyboardEventReceiverSystem()
 void KeyboardEventReceiverSystem::operator()(std::shared_ptr<wkt::components::KeyboardEventReceiver> ker)
 {
     for(auto& event : getEvents())
-        if(event.repeat)
+        if(event.repeat && ker->onKeyPressed)
             ker->onKeyPressed(event);
-        else if(event.eventType == SDL_KEYUP)
+        else if(event.eventType == SDL_KEYUP && ker->onKeyUp)
             ker->onKeyUp(event);
-        else if(event.eventType == SDL_KEYDOWN)
+        else if(event.eventType == SDL_KEYDOWN && ker->onKeyDown)
             ker->onKeyDown(event);
 }
 

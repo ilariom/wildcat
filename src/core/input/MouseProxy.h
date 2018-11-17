@@ -127,6 +127,13 @@ public:
     std::vector<MouseMotionEvent>&& takeMotionEvents() { return std::move(this->motionEvents); }
     std::vector<MouseWheelEvent>&& takeWheelEvents() { return std::move(this->wheelEvents); }
 
+    void close()
+    {
+        this->buttonEvents.clear();
+        this->motionEvents.clear();
+        this->wheelEvents.clear();
+    }
+
 private:
     std::vector<MouseButtonEvent> buttonEvents;
     std::vector<MouseMotionEvent> motionEvents;
