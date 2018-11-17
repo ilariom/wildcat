@@ -37,7 +37,7 @@ std::shared_ptr<AbstractDictionary> make_abstract_dictionary_from(const Dictiona
 template<typename key_type, typename mapped_type, typename key_hasher = std::hash<key_type>>
 std::shared_ptr<Dictionary<key_type, mapped_type, key_hasher>> get_dictionary(const std::shared_ptr<AbstractDictionary>& ad)
 {
-    return std::static_pointer_cast<Dictionary<key_type, mapped_type, key_hasher>(ad);
+    return std::static_pointer_cast<Dictionary<key_type, mapped_type, key_hasher>>(ad);
 }
 
 
