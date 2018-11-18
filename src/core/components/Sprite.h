@@ -18,6 +18,8 @@ public:
 public:
     bool unique() const override;
     void draw(s2x::Renderer&, const Transform&) override;
+    void shade(const soft_shader&) override;
+    void resetShading() override;
     wkt::math::Size size() const { return this->ss.size(); }
 
 private:

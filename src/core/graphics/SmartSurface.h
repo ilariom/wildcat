@@ -17,22 +17,26 @@ class SmartSurface
     friend Pixel;
     
 public:
-    explicit SmartSurface(const wkt::math::Size& size) : surface(std::make_shared<s2x::Surface>(size.width, size.height)) { }
     explicit SmartSurface(const std::string& filename);
+
+    SmartSurface(const SmartSurface&);
 
 public:
     inline Pixel operator()(int x, int y);
     inline const Pixel operator()(int x, int y) const;
     s2x::Texture& getTexture();
-    wkt::math::Size size() const { return { this->surface->size().width, this->surface->size().height }; }
+    wkt::math::Size size() const { return { this->activeSurface->size().width, this->activeSurface->size().height }; }
+    void resetSurface();
 
-    explicit operator bool() const { return static_cast<SDL_Surface*>(*this->surface) != nullptr; }
-
-private:
-    void copyOnWrite();
+    explicit operator bool() const { return static_cast<SDL_Surface*>(*this->activeSurface) != nullptr; }
 
 private:
-    std::shared_ptr<s2x::Surface> surface;
+    void copyOnAccess();
+
+private:
+    std::shared_ptr<s2x::Surface> commonSurface;
+    std::unique_ptr<s2x::Surface> localSurface = nullptr;
+    s2x::Surface* activeSurface;
     std::shared_ptr<s2x::Texture> texture;
     bool surfaceModified = false;
     bool isAlreadyCloned = false;
@@ -41,9 +45,10 @@ private:
 
 inline Pixel SmartSurface::operator()(int x, int y)
 {
+    copyOnAccess();
     Pixel p(*this);
     s2x::Pixel* pp = &p;
-    *pp = (*this->surface)(x, y);
+    *pp = (*this->activeSurface)(x, y);
     return p;
 }
 

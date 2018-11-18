@@ -31,4 +31,21 @@ void Sprite::draw(s2x::Renderer& renderer, const Transform& transform)
     renderer.copy(texture, r, coords.rotation, ra, coords.scaleX, coords.scaleY);
 }
 
+void Sprite::shade(const soft_shader& softShader)
+{
+    auto sz = size();
+
+    for(int x = 0; x < sz.width; ++x)
+        for(int y = 0; y < sz.height; ++y)
+        {
+            wkt::gph::Pixel p = this->ss(x, y);
+            p.set(softShader(p.get(), {x, y}, sz));
+        }
+}
+
+void Sprite::resetShading()
+{
+    this->ss.resetSurface();
+}
+
 }}

@@ -12,49 +12,68 @@ SmartSurface::SmartSurface(const std::string& filename)
 {
     this->filename = "../res/" + filename;
     auto& surfaceCache = SurfaceCache::getInstance();
-    this->surface = surfaceCache[this->filename];
+    this->commonSurface = surfaceCache[this->filename];
+    this->activeSurface = this->commonSurface.get();
+
+    auto& texCache = TextureCache::getInstance();
+
+    if(!texCache.find(this->filename))
+        texCache.insert(this->filename, std::make_shared<s2x::Texture>(*texCache.renderer(), *this->commonSurface));
+
+    this->texture = texCache.at(this->filename);
 
     assert(*this);
 }
 
-s2x::Texture& SmartSurface::getTexture()
+SmartSurface::SmartSurface(const SmartSurface& ss)
 {
-    auto& texCache = TextureCache::getInstance();
-    this->texture = texCache.at(this->filename);
-    bool fromCache = this->texture != nullptr;
-
-    if(this->surfaceModified)
+    this->filename = ss.filename;
+    this->commonSurface = ss.commonSurface;
+    
+    if(ss.localSurface)
     {
-        if(fromCache)
-        {
-            s2x::Renderer* renderer = texCache.renderer();
-            this->texture = std::make_shared<s2x::Texture>(*renderer, *(this->surface));
-        }
-        else
-        {
-            *(this->texture) = *(this->surface);
-        }
-
-        this->surfaceModified = false;
+        this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*ss.localSurface.get()));
+        this->activeSurface = this->localSurface.get();
+        this->isAlreadyCloned = true;
     }
-    else if(this->texture == nullptr)
+    else
     {
-        s2x::Renderer* renderer = texCache.renderer();
-        this->texture = std::make_shared<s2x::Texture>(*renderer, *(this->surface));
-        texCache.insert(this->filename, this->texture);
+        this->activeSurface = this->commonSurface.get();
+        this->isAlreadyCloned = false;
     }
 
-    return *(this->texture);
+    this->surfaceModified = false;
 }
 
-void SmartSurface::copyOnWrite()
+s2x::Texture& SmartSurface::getTexture()
 {
+    if(!this->isAlreadyCloned || !this->surfaceModified)
+        return *this->texture;
+
+    *this->texture = this->activeSurface == this->commonSurface.get() ? *this->commonSurface : *this->localSurface;
+    return *this->texture;
+}
+
+void SmartSurface::copyOnAccess()
+{
+    this->surfaceModified = true;
+
     if(this->isAlreadyCloned)
         return;
     
-    this->surfaceModified = true;
-    this->surface = std::make_shared<s2x::Surface>(*(this->surface));
+    this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*this->commonSurface));
+    this->activeSurface = this->localSurface.get();
+    this->texture = std::make_shared<s2x::Texture>(*TextureCache::getInstance().renderer(), *this->localSurface);
     this->isAlreadyCloned = true;
+}
+
+void SmartSurface::resetSurface()
+{
+    this->activeSurface = this->commonSurface.get();
+    this->texture = TextureCache::getInstance().at(this->filename);
+    this->isAlreadyCloned = false;
+    this->surfaceModified = false;
+    this->localSurface = nullptr;
 }
 
 }}

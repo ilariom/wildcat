@@ -24,6 +24,7 @@ public:
     static inline TextureCache& getInstance();
     inline std::shared_ptr<s2x::Texture> at(const std::string&);
     inline void insert(const std::string& filename, std::shared_ptr<s2x::Texture> tex);
+    inline bool find(const std::string&);
 
     void setRenderer(s2x::Renderer* renderer) { this->ren = renderer; }
     s2x::Renderer* renderer() const { return this->ren; }
@@ -55,6 +56,11 @@ inline std::shared_ptr<s2x::Texture> TextureCache::at(const std::string& filenam
 inline void TextureCache::insert(const std::string& filename, std::shared_ptr<s2x::Texture> tex)
 {
     this->cache[filename] = tex;
+}
+
+inline bool TextureCache::find(const std::string& filename)
+{
+    return this->cache.find(filename) != this->cache.end();
 }
 
 }}

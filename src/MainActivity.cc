@@ -19,40 +19,34 @@
 #include "core/components/ActionReceiver.h"
 #include "core/systems/ActionReceiverSystem.h"
 #include "core/input/InputManager.h"
+#include "core/shaders/shaders.h"
 #include <memory>
 
 using namespace wkt::components;
 using namespace wkt::events;
+using namespace wkt::gph;
+using namespace wkt::math;
 
 class Mover : public Script
 {
 public:
     void init() override 
     { 
+        
         s2x::log("INIT!");
         auto& entity = *getEntity();
         auto transform = *entity.query<Transform>();
         transform->setScale(.25f);
+        auto sprite = *entity.query<Sprite>();
+        sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
-        mouseRecv->onButton = [this] (const wkt::events::MouseButtonEvent& ev) {
+        mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
             s2x::log("CLICK");
-            auto& ab = InputManager::getInstance().getActionBroadcaster();
-            ab.postAction({
-                "move!",
-                {}
-            });
+            sprite->resetShading();
         };
 
         entity += mouseRecv;
-
-        auto actionRecv = std::make_shared<ActionReceiver>();
-        actionRecv->onAction = [this, transform] (const Action& action) {
-            transform->addPosition({ 20, 0 });
-        };
-
-        actionRecv->filters.push_back("move!");
-        entity += actionRecv;
     }
 
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
@@ -95,10 +89,18 @@ void MainActivity::onStart()
     entity += std::make_shared<Sprite>("ninja.png");
     entity += std::make_shared<Mover>();
     scene->getDefaultSceneGraph().setRoot(node);
+
+    auto& s = scene->getDefaultSceneGraph().entityManager().make();
+    auto n = std::make_shared<Node>();
+    node->appendChild(n);
+    auto t = std::make_shared<Transform>();
+    t->setPosition({200, 0});
+    s += n;
+    s += t;
+    s += std::make_shared<Sprite>("ninja.png");
     
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
-    scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ActionReceiverSystem>();
 
     wkt::Director::getInstance().runScene(scene);
     s2x::log("START!");
