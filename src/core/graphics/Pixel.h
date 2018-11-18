@@ -16,10 +16,10 @@ public:
     explicit Pixel(SmartSurface&);
     Pixel(const Pixel&) = default;
     Pixel(Pixel&&) = default;
-    Pixel& operator=(Pixel&&) = default;
 
 public:
     void set(const Color& c);
+    Color get() const;
     
 private:
     SmartSurface& ss;

@@ -6,9 +6,9 @@ namespace gph
 
 namespace colors
 {
-    const Color red = { 255, 0, 0, 255 };
-    const Color green = { 0, 255, 0, 255 };
-    const Color blue = { 0, 0, 255, 255 };
+    const Color red = { 255.f, 0.f, 0.f, 255.f };
+    const Color green = { 0.f, 255.f, 0.f, 255.f };
+    const Color blue = { 0.f, 0.f, 255.f, 255.f };
 }
 
 }}
