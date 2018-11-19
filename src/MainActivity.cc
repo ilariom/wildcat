@@ -20,6 +20,7 @@
 #include "core/systems/ActionReceiverSystem.h"
 #include "core/input/InputManager.h"
 #include "core/shaders/shaders.h"
+#include "core/components/JSON.h"
 #include <memory>
 
 using namespace wkt::components;
@@ -32,9 +33,13 @@ class Mover : public Script
 public:
     void init() override 
     { 
-        
         s2x::log("INIT!");
         auto& entity = *getEntity();
+        auto jsptr = *entity.query<JSON>();
+        JSON js = *jsptr;
+        js["hello"] = "world";
+        s2x::log(js["hello"].asString());
+
         auto transform = *entity.query<Transform>();
         transform->setScale(.25f);
         auto sprite = *entity.query<Sprite>();
@@ -88,6 +93,7 @@ void MainActivity::onStart()
     entity += std::make_shared<Transform>();
     entity += std::make_shared<Sprite>("ninja.png");
     entity += std::make_shared<Mover>();
+    entity += std::make_shared<JSON>();
     scene->getDefaultSceneGraph().setRoot(node);
 
     auto& s = scene->getDefaultSceneGraph().entityManager().make();
