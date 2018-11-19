@@ -20,7 +20,7 @@ SmartSurface::SmartSurface(const std::string& filename)
     if(!texCache.find(this->filename))
         texCache.insert(this->filename, std::make_shared<s2x::Texture>(*texCache.renderer(), *this->commonSurface));
 
-    this->texture = texCache.at(this->filename);
+    this->commonTexture = texCache.at(this->filename);
 
     assert(*this);
 }
@@ -29,11 +29,13 @@ SmartSurface::SmartSurface(const SmartSurface& ss)
 {
     this->filename = ss.filename;
     this->commonSurface = ss.commonSurface;
+    this->commonTexture = ss.commonTexture;
     
     if(ss.localSurface)
     {
         this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*ss.localSurface.get()));
         this->activeSurface = this->localSurface.get();
+        this->localTexture = std::make_unique<s2x::Texture>(*TextureCache::getInstance().renderer(), *ss.localSurface);
         this->isAlreadyCloned = true;
     }
     else
@@ -47,11 +49,16 @@ SmartSurface::SmartSurface(const SmartSurface& ss)
 
 s2x::Texture& SmartSurface::getTexture()
 {
-    if(!this->isAlreadyCloned || !this->surfaceModified)
-        return *this->texture;
+    if(!this->isAlreadyCloned || this->activeSurface == this->commonSurface.get())
+        return *this->commonTexture;
 
-    *this->texture = this->activeSurface == this->commonSurface.get() ? *this->commonSurface : *this->localSurface;
-    return *this->texture;
+    if(this->surfaceModified)
+    {
+        *this->localTexture = *this->localSurface;
+        this->surfaceModified = false;
+    }
+
+    return *this->localTexture;
 }
 
 void SmartSurface::copyOnAccess()
@@ -63,14 +70,13 @@ void SmartSurface::copyOnAccess()
     
     this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*this->commonSurface));
     this->activeSurface = this->localSurface.get();
-    this->texture = std::make_shared<s2x::Texture>(*TextureCache::getInstance().renderer(), *this->localSurface);
+    this->localTexture = std::make_unique<s2x::Texture>(*TextureCache::getInstance().renderer(), *this->localSurface);
     this->isAlreadyCloned = true;
 }
 
 void SmartSurface::resetSurface()
 {
     this->activeSurface = this->commonSurface.get();
-    this->texture = TextureCache::getInstance().at(this->filename);
     this->isAlreadyCloned = false;
     this->surfaceModified = false;
     this->localSurface = nullptr;

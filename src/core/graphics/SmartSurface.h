@@ -35,9 +35,10 @@ private:
 
 private:
     std::shared_ptr<s2x::Surface> commonSurface;
+    std::shared_ptr<s2x::Texture> commonTexture;
     std::unique_ptr<s2x::Surface> localSurface = nullptr;
+    std::unique_ptr<s2x::Texture> localTexture = nullptr;
     s2x::Surface* activeSurface;
-    std::shared_ptr<s2x::Texture> texture;
     bool surfaceModified = false;
     bool isAlreadyCloned = false;
     std::string filename;

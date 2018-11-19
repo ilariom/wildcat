@@ -184,11 +184,6 @@ inline Surface::Surface(const std::string& filename)
 
 inline Surface::Surface(const Surface& srf)
 {
-    // SDL_Surface& s = *(srf.surface);
-    // SDL_PixelFormat& p = *(s.format);
-    // Uint32 pxs[s.pitch * s.h];
-    // memcpy(pxs, s.pixels, s.pitch * s.h);
-    // this->surface = SDL_CreateRGBSurfaceFrom(pxs, s.w, s.h, p.BitsPerPixel, s.pitch, p.Rmask, p.Gmask, p.Bmask, p.Amask);
     this->surface = SDL_ConvertSurface(srf.surface, srf.pixelFormat(), 0);
 }
 
