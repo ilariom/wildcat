@@ -14,7 +14,7 @@ namespace gph
 
 class SmartSurface
 {
-    friend Pixel;
+    friend PixelIterator;
     
 public:
     explicit SmartSurface(const std::string& filename);
@@ -22,8 +22,8 @@ public:
     SmartSurface(const SmartSurface&);
 
 public:
-    inline Pixel operator()(int x, int y);
-    inline const Pixel operator()(int x, int y) const;
+    inline PixelIterator operator()(int x, int y);
+    inline const PixelIterator operator()(int x, int y) const;
     s2x::Texture& getTexture();
     wkt::math::Size size() const { return { this->activeSurface->size().width, this->activeSurface->size().height }; }
     void resetSurface();
@@ -43,18 +43,21 @@ private:
     std::string filename;
 };
 
-inline Pixel SmartSurface::operator()(int x, int y)
+inline PixelIterator SmartSurface::operator()(int x, int y)
 {
     copyOnAccess();
-    Pixel p(*this);
-    s2x::Pixel* pp = &p;
+    PixelIterator p(*this, {x, y});
+    s2x::Pixel* pp = reinterpret_cast<s2x::Pixel*>(&p);
     *pp = (*this->activeSurface)(x, y);
     return p;
 }
 
-inline const Pixel SmartSurface::operator()(int x, int y) const
+inline const PixelIterator SmartSurface::operator()(int x, int y) const
 {
-    return (*this)(x, y);
+    PixelIterator p(const_cast<SmartSurface&>(*this), {x, y});
+    s2x::Pixel* pp = &p;
+    *pp = (*this->activeSurface)(x, y);
+    return p;
 }
 
 }}

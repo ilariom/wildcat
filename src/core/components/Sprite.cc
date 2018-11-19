@@ -38,8 +38,8 @@ void Sprite::shade(const soft_shader& softShader)
     for(int x = 0; x < sz.width; ++x)
         for(int y = 0; y < sz.height; ++y)
         {
-            wkt::gph::Pixel p = this->ss(x, y);
-            p.set(softShader(p.get(), {x, y}, sz));
+            wkt::gph::PixelIterator p = this->ss(x, y);
+            *p = softShader(p);
         }
 }
 

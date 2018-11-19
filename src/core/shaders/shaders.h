@@ -4,6 +4,7 @@
 #include "math/math.h"
 #include "math/numerical.h"
 #include "graphics/Color.h"
+#include "graphics/Pixel.h"
 
 namespace wkt {
 namespace shaders
@@ -14,8 +15,9 @@ class lighten
 public:
     lighten(float factor) : factor(wkt::math::clamp(factor, 0, 1)) { }
 
-    inline wkt::gph::Color operator()(const wkt::gph::Color& c, const wkt::math::vec2&, const wkt::math::Size&)
+    inline wkt::gph::Color operator()(const wkt::gph::PixelIterator& p)
     {
+        wkt::gph::Color c = *p;
         float m = std::max({c.r, c.g, c.b});
         float a = 1 / m;
         return { 
@@ -35,8 +37,9 @@ class darken
 public:
     darken(float factor) : factor(wkt::math::clamp(factor, 0, 1)) { }
 
-    inline wkt::gph::Color operator()(const wkt::gph::Color& c, const wkt::math::vec2&, const wkt::math::Size&)
+    inline wkt::gph::Color operator()(const wkt::gph::PixelIterator& p)
     {
+        wkt::gph::Color c = *p;
         float m = std::max({c.r, c.g, c.b});
         float a = 1 - m;
         return { 
@@ -62,8 +65,9 @@ public:
         this->bb = bb / this->den;
     }
 
-    inline wkt::gph::Color operator()(const wkt::gph::Color& c, const wkt::math::vec2&, const wkt::math::Size&)
+    inline wkt::gph::Color operator()(const wkt::gph::PixelIterator& p)
     {
+        wkt::gph::Color c = *p;
         float v = (this->br * c.r + this->bg * c.g + this->bb * c.b) / this->den;
         return { 
             v, v, v, c.a
