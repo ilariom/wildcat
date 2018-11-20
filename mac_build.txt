@@ -1,5 +1,7 @@
-Until the project is moved to CMake, this command should compile the engine in Mac / clang++.
+Until the project is moved to CMake, run this command under src/ directory to compile the engine in Mac / clang++.
 Ignore warnings emitted as they are in progress features.
 Note that it may take minutes.
+A known issue in Mojave is that the window doesn't draw until moved or resized. This is from SDL2. Hopefully they will fix it soon.
 
-g++ --std=c++14 -fpermissive -I. -I./core -I./core/globals -I./core/input -I./core/managers -I./core/utils -I./core/utils/json -I./core/ecs -I./core/math -I./core/components -I./core/shaders -I./core/graphics -I./core/systems -I./core/s2x *.cc core/*.cc core/**/*.cc core/utils/json/*.cc -lm -lSDL2 -lSDL2_image -o ../bin/wildcat_app
+clang++ --std=c++14 $(sdl2-config --static-libs) -lSDL2_image $(sdl2-config --cflags) -I. -I./core -I./core/globals -I./core/input -I./core/managers -I./core/utils -I./core/utils/json -I./core/ecs -I./core/math -I./core/components -I./core/shaders -I./core/graphics -I./core/systems -I./core/s2x *.cc core/*.cc core/**/*.cc core/utils/json/*.cc -g -o ../bin/wildcat_app
+
