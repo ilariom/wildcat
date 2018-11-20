@@ -43,12 +43,12 @@ public:
         auto transform = *entity.query<Transform>();
         transform->setScale(.25f);
         auto sprite = *entity.query<Sprite>();
-        sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
+        // sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
         mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
             s2x::log("CLICK");
-            sprite->resetShading();
+            // sprite->resetShading();
         };
 
         entity += mouseRecv;

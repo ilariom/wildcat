@@ -1,7 +1,7 @@
 #ifndef WKT_SHADERS_H
 #define WKT_SHADERS_H
 
-#include "math/math.h"
+#include "math/wktmath.h"
 #include "math/numerical.h"
 #include "graphics/Color.h"
 #include "graphics/Pixel.h"

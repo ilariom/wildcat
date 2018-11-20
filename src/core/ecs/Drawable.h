@@ -5,7 +5,7 @@
 #include "components/Transform.h"
 #include "graphics/Color.h"
 #include "graphics/Pixel.h"
-#include "math/math.h"
+#include "math/wktmath.h"
 #include "s2x/video.h"
 #include <memory>
 

@@ -21,6 +21,7 @@ Component& Component::operator=(const Component& comp)
 {
     this->id = uid++;
     this->entity = comp.entity;
+    return *this;
 }
 
 bool Component::unique() const

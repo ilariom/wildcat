@@ -1,8 +1,8 @@
 #ifndef WKT_NUMERICAL_H
 #define WKT_NUMERICAL_H
 
-#include "core/math/math.h"
-#include <cmath>
+#include "math/wktmath.h"
+#include <math.h>
 
 namespace wkt {
 namespace math

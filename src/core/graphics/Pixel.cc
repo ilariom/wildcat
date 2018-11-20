@@ -39,7 +39,7 @@ const PixelIterator::ColorRef PixelIterator::operator*() const
     return ColorRef(*this);
 }
 
-const wkt::math::Size& PixelIterator::size() const
+const wkt::math::Size PixelIterator::size() const
 { 
     return this->ss.size(); 
 }

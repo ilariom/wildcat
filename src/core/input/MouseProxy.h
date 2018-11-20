@@ -11,7 +11,7 @@ namespace events
 
 enum class ButtonEvent { UP, DOWN };
 enum class ButtonState { PRESSED, RELEASED };
-enum class ButtonType { LEFT, MIDDLE, RIGHT, X1, X2 };
+enum class ButtonType { LEFT, MIDDLE, RIGHT, X1, X2, NONE };
 
 struct MouseButtonEvent
 {
@@ -33,6 +33,8 @@ inline ButtonType getButtonType(const SDL_MouseButtonEvent& ev)
         case SDL_BUTTON_X1:         return ButtonType::X1;
         case SDL_BUTTON_X2:         return ButtonType::X2;
     }
+
+    return ButtonType::NONE;
 }
 
 inline MouseButtonEvent mouseButtonEventFromSDL(const SDL_MouseButtonEvent& ev)
@@ -58,19 +60,19 @@ inline std::vector<ButtonType> getButtonsDuringMotion(uint32_t state)
 {
     std::vector<ButtonType> res;
 
-    if(state & SDL_BUTTON_LMASK == SDL_BUTTON_LMASK)
+    if((state & SDL_BUTTON_LMASK) == SDL_BUTTON_LMASK)
         res.push_back(ButtonType::LEFT);
 
-    if(state & SDL_BUTTON_MMASK == SDL_BUTTON_MMASK)
+    if((state & SDL_BUTTON_MMASK) == SDL_BUTTON_MMASK)
         res.push_back(ButtonType::MIDDLE);
 
-    if(state & SDL_BUTTON_RMASK == SDL_BUTTON_RMASK)
+    if((state & SDL_BUTTON_RMASK) == SDL_BUTTON_RMASK)
         res.push_back(ButtonType::RIGHT);
 
-    if(state & SDL_BUTTON_X1MASK == SDL_BUTTON_X1MASK)
+    if((state & SDL_BUTTON_X1MASK) == SDL_BUTTON_X1MASK)
         res.push_back(ButtonType::X1);
 
-    if(state & SDL_BUTTON_X2MASK == SDL_BUTTON_X2MASK)
+    if((state & SDL_BUTTON_X2MASK) == SDL_BUTTON_X2MASK)
         res.push_back(ButtonType::X2);
 
     return res;

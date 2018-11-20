@@ -48,7 +48,7 @@ void clear()
 
 void set(const std::string& msg)
 {
-    SDL_SetError(msg.c_str());
+    SDL_SetError("%s", msg.c_str());
 }
 
 } // namespace error
@@ -83,7 +83,7 @@ std::string getPrefPath(const std::string& org, const std::string& app)
 
 void log(const std::string& msg)
 {
-    SDL_Log(msg.c_str());
+    SDL_Log("%s", msg.c_str());
 }
 
 }

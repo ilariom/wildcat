@@ -1,0 +1,5 @@
+Until the project is moved to CMake, this command should compile the engine in Mac / clang++.
+Ignore warnings emitted as they are in progress features.
+Note that it may take minutes.
+
+g++ --std=c++14 -fpermissive -I. -I./core -I./core/globals -I./core/input -I./core/managers -I./core/utils -I./core/utils/json -I./core/ecs -I./core/math -I./core/components -I./core/shaders -I./core/graphics -I./core/systems -I./core/s2x *.cc core/*.cc core/**/*.cc core/utils/json/*.cc -lm -lSDL2 -lSDL2_image -o ../bin/wildcat_app

@@ -2,7 +2,7 @@
 #define _WKT_SMART_SURFACE_H
 
 #include "s2x/video.h"
-#include "math/math.h"
+#include "math/wktmath.h"
 #include "Color.h"
 #include "Pixel.h"
 #include <memory>
@@ -25,7 +25,7 @@ public:
     inline PixelIterator operator()(int x, int y);
     inline const PixelIterator operator()(int x, int y) const;
     s2x::Texture& getTexture();
-    wkt::math::Size size() const { return { this->activeSurface->size().width, this->activeSurface->size().height }; }
+    wkt::math::Size size() const { return { (float)this->activeSurface->size().width, (float)this->activeSurface->size().height }; }
     void resetSurface();
 
     explicit operator bool() const { return static_cast<SDL_Surface*>(*this->activeSurface) != nullptr; }
@@ -47,7 +47,7 @@ private:
 inline PixelIterator SmartSurface::operator()(int x, int y)
 {
     copyOnAccess();
-    PixelIterator p(*this, {x, y});
+    PixelIterator p(*this, {(float)x, (float)y});
     s2x::Pixel* pp = reinterpret_cast<s2x::Pixel*>(&p);
     *pp = (*this->activeSurface)(x, y);
     return p;
@@ -55,7 +55,7 @@ inline PixelIterator SmartSurface::operator()(int x, int y)
 
 inline const PixelIterator SmartSurface::operator()(int x, int y) const
 {
-    PixelIterator p(const_cast<SmartSurface&>(*this), {x, y});
+    PixelIterator p(const_cast<SmartSurface&>(*this), {(float)x, (float)y});
     s2x::Pixel* pp = &p;
     *pp = (*this->activeSurface)(x, y);
     return p;

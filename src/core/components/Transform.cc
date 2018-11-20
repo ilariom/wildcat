@@ -35,13 +35,15 @@ Coords Transform::getWorldCoordinates() const
     return o;
 }
 
-Coords Coords::operator*=(const Coords& other)
+Coords& Coords::operator*=(const Coords& other)
 {
     this->position += other.position;
     this->rotationAnchor += other.rotationAnchor;
     this->rotation += other.rotation;
     this->scaleX *= other.scaleX;
     this->scaleY *= other.scaleY;
+
+    return *this;
 }
 
 Coords operator*(const Coords& a, const Coords& b)

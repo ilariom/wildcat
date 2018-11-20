@@ -3,7 +3,7 @@
 
 #include "ecs/Drawable.h"
 #include "graphics/SmartSurface.h"
-#include "math/math.h"
+#include "math/wktmath.h"
 #include <string>
 
 namespace wkt {

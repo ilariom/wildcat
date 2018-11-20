@@ -24,6 +24,7 @@ public:
     {
         using vect = std::vector<std::shared_ptr<Component>>;
         *static_cast<vect*>(this) = *static_cast<const vect*>(&other);
+        return *this;
     }
 
     template<typename D = Component>
@@ -31,6 +32,7 @@ public:
     {
         using vect = std::vector<std::shared_ptr<Component>>;
         *static_cast<vect*>(this) = std::move(*static_cast<const vect*>(&other));
+        return *this;
     }
 };
 
