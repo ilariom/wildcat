@@ -41,14 +41,15 @@ public:
         s2x::log(js["hello"].asString());
 
         auto transform = *entity.query<Transform>();
-        transform->setScale(.25f);
+        transform->setScale(.5f);
         auto sprite = *entity.query<Sprite>();
-        // sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
+        sprite->shade(wkt::shaders::lighten(.5f));
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
-        mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
+        mouseRecv->onButton = [this, sprite, transform] (const wkt::events::MouseButtonEvent& ev) {
             s2x::log("CLICK");
-            // sprite->resetShading();
+            sprite->resetShading();
+            transform->setPosition({(float)ev.x, (float)ev.y});
         };
 
         entity += mouseRecv;
@@ -100,7 +101,7 @@ void MainActivity::onStart()
     auto n = std::make_shared<Node>();
     node->appendChild(n);
     auto t = std::make_shared<Transform>();
-    t->setPosition({200, 0});
+    t->setPosition({300, 150});
     s += n;
     s += t;
     s += std::make_shared<Sprite>("ninja.png");

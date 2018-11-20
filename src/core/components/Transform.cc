@@ -5,7 +5,8 @@ namespace wkt
 namespace components
 {
 
-namespace {
+namespace 
+{
     constexpr float toDegree(float angleinRadians)
     {
         return 57.2958f * angleinRadians;
