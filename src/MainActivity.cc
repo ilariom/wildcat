@@ -21,6 +21,7 @@
 #include "core/input/InputManager.h"
 #include "core/shaders/shaders.h"
 #include "core/components/JSON.h"
+#include "core/components/Crowd.h"
 #include <memory>
 
 using namespace wkt::components;
@@ -40,15 +41,14 @@ public:
         js["hello"] = "world";
         s2x::log(js["hello"].asString());
 
-        auto transform = *entity.query<Transform>();
-        transform->setScale(.25f);
-        auto sprite = *entity.query<Sprite>();
-        sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
+        // auto transform = *entity.query<Transform>();
+        // transform->setScale(.25f);
+        // auto sprite = *entity.query<Sprite>();
+        // sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
-        mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
+        mouseRecv->onButton = [this] (const wkt::events::MouseButtonEvent& ev) {
             s2x::log("CLICK");
-            sprite->resetShading();
         };
 
         entity += mouseRecv;
@@ -91,20 +91,26 @@ void MainActivity::onStart()
     auto node = std::make_shared<Node>();
     entity += node;
     entity += std::make_shared<Transform>();
-    entity += std::make_shared<Sprite>("ninja.png");
+    // entity += std::make_shared<Sprite>("ninja.png");
     entity += std::make_shared<Mover>();
     entity += std::make_shared<JSON>();
     scene->getDefaultSceneGraph().setRoot(node);
+    auto t1 = std::make_shared<Transform>();
+    auto t2 = std::make_shared<Transform>();
+    t1->setPosition({200, 100});
+    t1->setScale(.5f);
 
-    auto& s = scene->getDefaultSceneGraph().entityManager().make();
-    auto n = std::make_shared<Node>();
-    node->appendChild(n);
-    auto t = std::make_shared<Transform>();
-    t->setPosition({200, 0});
-    s += n;
-    s += t;
-    s += std::make_shared<Sprite>("ninja.png");
-    
+    t2->setScale(.15f);
+
+    // Spectator sp1 = makeSpectator("ninja.png", *t1);
+    // Spectator sp2 = makeSpectator("ninja.png", *t2);
+
+    auto crowd = std::make_shared<Crowd>();
+    crowd->emplace("ninja.png", *t1);
+    crowd->emplace("ninja.png", *t2);
+
+    entity += crowd;
+
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
 
