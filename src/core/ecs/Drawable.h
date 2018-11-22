@@ -16,11 +16,16 @@ namespace ecs
 class Drawable : public Component
 {
 public:
-    using soft_shader = std::function<wkt::gph::Color(const wkt::gph::PixelIterator&)>;
+    virtual void draw(s2x::Renderer&, const wkt::components::Transform&) = 0;
+};
+
+class ShadedDrawable : public Drawable
+{
+public:
+    using pixel_manipulator = std::function<wkt::gph::Color(const wkt::gph::PixelIterator&)>;
 
 public:
-    virtual void draw(s2x::Renderer&, const wkt::components::Transform&) = 0;
-    virtual void shade(const soft_shader&) { }
+    virtual void shade(const pixel_manipulator&) { }
     virtual void resetShading() { }
 };
 

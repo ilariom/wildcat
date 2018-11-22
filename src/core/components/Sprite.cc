@@ -31,7 +31,7 @@ void Sprite::draw(s2x::Renderer& renderer, const Transform& transform)
     renderer.copy(texture, r, coords.rotation, ra, coords.scaleX, coords.scaleY);
 }
 
-void Sprite::shade(const soft_shader& softShader)
+void Sprite::shade(const pixel_manipulator& pixmanip)
 {
     auto sz = size();
 
@@ -39,7 +39,7 @@ void Sprite::shade(const soft_shader& softShader)
         for(int y = 0; y < sz.height; ++y)
         {
             wkt::gph::PixelIterator p = this->ss(x, y);
-            *p = softShader(p);
+            *p = pixmanip(p);
         }
 }
 

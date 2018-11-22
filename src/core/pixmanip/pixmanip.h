@@ -7,7 +7,7 @@
 #include "graphics/Pixel.h"
 
 namespace wkt {
-namespace shaders
+namespace pixmanip
 {
 
 class lighten

@@ -19,7 +19,7 @@
 #include "core/components/ActionReceiver.h"
 #include "core/systems/ActionReceiverSystem.h"
 #include "core/input/InputManager.h"
-#include "core/shaders/shaders.h"
+#include "core/pixmanip/pixmanip.h"
 #include "core/components/JSON.h"
 #include "core/components/Crowd.h"
 #include <memory>

@@ -10,7 +10,7 @@ namespace wkt {
 namespace components
 {
 
-class Sprite : public wkt::ecs::Drawable
+class Sprite : public wkt::ecs::ShadedDrawable
 {
 public:
     Sprite(const std::string& filename) : ss(filename) { }
@@ -18,7 +18,7 @@ public:
 public:
     bool unique() const override;
     void draw(s2x::Renderer&, const Transform&) override;
-    void shade(const soft_shader&) override;
+    void shade(const pixel_manipulator&) override;
     void resetShading() override;
     wkt::math::Size size() const { return this->ss.size(); }
 
