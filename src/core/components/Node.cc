@@ -16,7 +16,7 @@ void Node::visit(std::function<bool(Node&)> fn)
 
         bool continueTraversal = fn(*v);
 
-        if(!continueTraversal)
+        if(!continueTraversal || v->prune())
         {
             continue;
         }

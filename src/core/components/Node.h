@@ -22,6 +22,8 @@ public:
     inline void removeFromParent();
     const Node* getParent() const { return this->parent; }
     bool hasParent() const { return getParent() != nullptr; }
+    void prune(bool enable) { this->shouldPrune = enable; }
+    bool prune() const { return this->shouldPrune; }
 
     const std::vector<std::shared_ptr<Node>>& getChildren() const { return this->children; }
 
@@ -30,6 +32,7 @@ public:
 private:
     std::vector<std::shared_ptr<Node>> children;
     Node* parent;
+    bool shouldPrune = false;
 };
 
 inline void Node::appendChild(std::shared_ptr<Node> node)

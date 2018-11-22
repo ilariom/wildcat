@@ -38,6 +38,9 @@ bool RenderSystem::operator()(wkt::components::Node& node)
     s2x::Renderer* renderer = wkt::gph::TextureCache::getInstance().renderer();
 
     std::for_each(drawables.begin(), drawables.end(), [&transform, renderer] (std::shared_ptr<Drawable>& d) {
+        if(!d->isVisible())
+            return;
+        
         d->draw(*renderer, *transform);
     });
     

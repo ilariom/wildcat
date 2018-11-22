@@ -17,6 +17,12 @@ class Drawable : public Component
 {
 public:
     virtual void draw(s2x::Renderer&, const wkt::components::Transform&) = 0;
+
+    void setVisible(bool enable) { this->visible = enable; }
+    bool isVisible() const { return this->visible; }
+    
+private:
+    bool visible = true;
 };
 
 class ShadedDrawable : public Drawable
