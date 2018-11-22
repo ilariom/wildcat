@@ -1,7 +1,7 @@
 #ifndef _WKT_MATH_H
 #define _WKT_MATH_H
 
-#include <cmath>
+#include <math.h>
 #include <ostream>
 
 namespace wkt {
@@ -123,18 +123,24 @@ inline mat2& mat2::operator+=(const mat2& other)
 {
     this->col1 += other.col1;
     this->col2 += other.col2;
+
+    return *this;
 }
 
 inline mat2& mat2::operator-=(const mat2& other)
 {
     this->col1 -= other.col1;
     this->col2 -= other.col2;
+
+    return *this;
 }
 
 inline mat2& mat2::operator*=(float x)
 {
     this->col1 *= x;
     this->col2 *= x;
+
+    return *this;
 }
 
 inline mat2 operator+(const mat2& a, const mat2& b)

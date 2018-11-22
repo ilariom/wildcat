@@ -2,7 +2,7 @@
 #define _WKT_PIXEL_H
 
 #include "s2x/video.h"
-#include "math/math.h"
+#include "math/wktmath.h"
 #include "Color.h"
 
 namespace wkt {
@@ -22,12 +22,11 @@ public:
         explicit ColorRef(const PixelIterator& pi) : pi(pi) { *this += pi.get(); }
 
     public:
-        operator Color() const { return static_cast<Color>(*this); }
-
         ColorRef& operator=(const Color& c)
         {
             static_cast<Color>(*this) = c;
             const_cast<PixelIterator&>(pi).set(c);
+            return *this;
         }
 
     private:
@@ -45,7 +44,7 @@ public:
     ColorRef operator*();
     const ColorRef operator*() const;
     const wkt::math::vec2& position() const { return this->pos; }
-    const wkt::math::Size& size() const;
+    const wkt::math::Size size() const;
 
 private:
     void set(const Color& c);

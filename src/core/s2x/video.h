@@ -349,6 +349,8 @@ inline Texture& Texture::operator=(const Surface& surface)
     SDL_LockTexture(this->resource, nullptr, &pixels, &pitch);
     memcpy(pixels, static_cast<SDL_Surface*>(surface)->pixels, pitch * this->height);
     SDL_UnlockTexture(this->resource);
+
+    return *this;
 }
 
 }

@@ -60,6 +60,8 @@ inline bool EventManager::poll()
     std::for_each(vec.begin(), vec.end(), [this] (const EventListener& el) {
         el.handler(cachedEvent);
     });
+
+    return true;
 }
 
 inline void EventManager::addListener(std::initializer_list<EventType> events, const EventListener& l)

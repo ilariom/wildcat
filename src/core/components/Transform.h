@@ -2,9 +2,9 @@
 #define _SKR_TRANSFORM_H
 
 #include "ecs/Component.h"
-#include "math/math.h"
+#include "math/wktmath.h"
 #include <cassert>
-#include <cmath>
+#include <math.h>
 #include <limits>
 
 namespace wkt {
@@ -20,7 +20,7 @@ struct Coords
     float scaleX = 1;
     float scaleY = 1;
 
-    Coords operator*=(const Coords& other);
+    Coords& operator*=(const Coords& other);
 };
 
 Coords operator*(const Coords& a, const Coords& b);

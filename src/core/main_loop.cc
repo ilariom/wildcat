@@ -14,7 +14,7 @@
 #include "input/ActionBroadcaster.h"
 #include <chrono>
 #include <thread>
-#include <cmath>
+#include <math.h>
 #include <cassert>
 
 namespace wkt
