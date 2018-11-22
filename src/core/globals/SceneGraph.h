@@ -4,6 +4,7 @@
 #include "managers/ManagersCollector.h"
 #include "components/Node.h"
 #include "globals/Director.h"
+#include "globals/Camera.h"
 #include "core/graphics/SurfaceCache.h"
 #include "systems/RenderSystem.h"
 #include "systems/TransformUpdateSystem.h"
@@ -37,12 +38,15 @@ public:
 private:
     std::shared_ptr<wkt::components::Node> node;
     std::unique_ptr<wkt::systems::RenderSystem> renderSystem;
+    Camera camera;
     bool active = true;
 };
 
 inline SceneGraph::SceneGraph()
 { 
-    this->renderSystem = std::make_unique<wkt::systems::RenderSystem>();
+    this->camera.setSize({640.f, 480.f});
+    this->camera.setPosition({200.f, 0.f});
+    this->renderSystem = std::make_unique<wkt::systems::RenderSystem>(this->camera);
     auto& sm = systemsManager();
     sm += std::make_unique<wkt::systems::TransformUpdateSystem>();
 }

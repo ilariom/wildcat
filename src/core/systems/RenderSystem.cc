@@ -12,7 +12,7 @@ namespace wkt {
 namespace systems
 {
 
-RenderSystem::RenderSystem()
+RenderSystem::RenderSystem(const wkt::scene::Camera& camera) : camera(camera)
 {
     bindHandler(std::bind(&RenderSystem::operator(), this, std::placeholders::_1));
 }
@@ -34,11 +34,11 @@ bool RenderSystem::operator()(wkt::components::Node& node)
     if(drawables.empty())
         return true;
 
-    auto transform = *transforms;
+    auto transform = this->camera.getScreenCoordinates(**transforms);
     s2x::Renderer* renderer = wkt::gph::TextureCache::getInstance().renderer();
 
     std::for_each(drawables.begin(), drawables.end(), [&transform, renderer] (std::shared_ptr<Drawable>& d) {
-        d->draw(*renderer, *transform);
+        d->draw(*renderer, transform);
     });
     
     return true;

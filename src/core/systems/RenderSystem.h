@@ -3,6 +3,7 @@
 
 #include "core/ecs/System.h"
 #include "core/components/Node.h"
+#include "globals/Camera.h"
 
 namespace wkt {
 namespace systems
@@ -11,10 +12,13 @@ namespace systems
 class RenderSystem : public wkt::ecs::HierarchicalSystem
 {
 public:
-    RenderSystem();
+    RenderSystem(const wkt::scene::Camera& camera);
 
 public:
     bool operator()(wkt::components::Node&);
+
+private:
+    const wkt::scene::Camera& camera;
 };
 
 }}
