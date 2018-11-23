@@ -1,7 +1,6 @@
 #include "SmartSurface.h"
 #include "SurfaceCache.h"
 #include "TextureCache.h"
-#include "globals/Director.h"
 #include <cassert>
 
 namespace wkt {

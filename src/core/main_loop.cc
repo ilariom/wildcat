@@ -5,10 +5,10 @@
 #include "s2x/video.h"
 #include "s2x/events.h"
 #include "input/InputManager.h"
-#include "globals/Director.h"
 #include "globals/World.h"
 #include "globals/Scene.h"
 #include "graphics/TextureCache.h"
+#include "graphics/Director.h"
 #include "input/KeyboardProxy.h"
 #include "input/MouseProxy.h"
 #include "input/ActionBroadcaster.h"
@@ -35,6 +35,8 @@ void mainLoop()
         s2x::Window window(conf.appName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, conf.windowWidth, conf.windowHeight);
         s2x::Renderer renderer(window, 
             conf.hardwareAccelerated ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC : SDL_RENDERER_SOFTWARE);
+
+        wkt::gph::Director director(renderer);
 
         s2x::EventManager em;
         wkt::gph::TextureCache& textureCache = wkt::gph::TextureCache::getInstance();
@@ -80,8 +82,6 @@ void mainLoop()
         im.setMouseProxy(&mp);
 
         wkt::events::ActionBroadcaster& actionBroadcaster = im.getActionBroadcaster();
-        
-        wkt::Director& director = wkt::Director::getInstance();
 
         mainActivity.onStart();
 
@@ -94,7 +94,7 @@ void mainLoop()
             // systems
 
             world.runComponentSystems();
-            auto& runningScene = director.getRunningScene();
+            auto& runningScene = wkt::scene::getRunningScene();
             runningScene.runComponentSystems();
 
             for(auto& sceneGraph : runningScene)
@@ -105,7 +105,10 @@ void mainLoop()
             renderer.clear();
 
             for(auto& sceneGraph : runningScene)
+            {
+                sceneGraph.setDirector(&director);
                 sceneGraph.render();
+            }
 
             renderer.present();
 

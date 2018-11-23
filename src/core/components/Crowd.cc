@@ -48,7 +48,7 @@ void Crowd::erase(SpectatorID id)
     this->spectators.erase(id);
 }
 
-void Crowd::draw(s2x::Renderer& r, const Transform& t)
+void Crowd::draw(const wkt::gph::Director& d, const Transform& t)
 {
     for(auto& p : this->spectators)
     {
@@ -56,7 +56,7 @@ void Crowd::draw(s2x::Renderer& r, const Transform& t)
         Transform& localTransform = transform(sp);
         Sprite& localSprite = sprite(sp);
         localTransform.setParentCoordinates(t.getWorldCoordinates());
-        localSprite.draw(r, localTransform);
+        localSprite.draw(d, localTransform);
     }
 }
 

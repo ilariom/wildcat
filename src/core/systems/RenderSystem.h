@@ -3,7 +3,7 @@
 
 #include "core/ecs/System.h"
 #include "core/components/Node.h"
-#include "globals/Camera.h"
+#include "graphics/Director.h"
 
 namespace wkt {
 namespace systems
@@ -12,13 +12,14 @@ namespace systems
 class RenderSystem : public wkt::ecs::HierarchicalSystem
 {
 public:
-    RenderSystem(const wkt::scene::Camera& camera);
+    RenderSystem();
 
 public:
     bool operator()(wkt::components::Node&);
+    void setDirector(wkt::gph::Director* director) { this->director = director; }
 
 private:
-    const wkt::scene::Camera& camera;
+    const wkt::gph::Director* director;
 };
 
 }}

@@ -5,7 +5,7 @@
 #include "components/Transform.h"
 
 namespace wkt {
-namespace scene
+namespace gph
 {
 
 class Camera

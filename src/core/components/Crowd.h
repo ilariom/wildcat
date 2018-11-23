@@ -4,6 +4,7 @@
 #include "ecs/Drawable.h"
 #include "components/Sprite.h"
 #include "components/Transform.h"
+#include "graphics/Director.h"
 #include <string>
 #include <unordered_map>
 
@@ -28,7 +29,7 @@ public:
     SpectatorID emplace(const std::string& filename, const Transform& t);
     void erase(SpectatorID id);
 
-    void draw(s2x::Renderer&, const Transform&) override;
+    void draw(const wkt::gph::Director&, const Transform&) override;
 
 private:
     std::unordered_map<SpectatorID, Spectator> spectators;
