@@ -13,7 +13,7 @@ namespace pixmanip
 class lighten
 {
 public:
-    lighten(float factor) : factor(wkt::math::clamp(factor, 0, 1)) { }
+    lighten(float factor = 1) : factor(wkt::math::clamp(factor, 0, 1)) { }
 
     inline wkt::gph::Color operator()(const wkt::gph::PixelIterator& p)
     {
@@ -35,7 +35,7 @@ private:
 class darken
 {
 public:
-    darken(float factor) : factor(wkt::math::clamp(factor, 0, 1)) { }
+    darken(float factor = 0) : factor(wkt::math::clamp(factor, 0, 1)) { }
 
     inline wkt::gph::Color operator()(const wkt::gph::PixelIterator& p)
     {

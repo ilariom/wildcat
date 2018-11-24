@@ -19,11 +19,6 @@ Color PixelIterator::get() const
     return Color(s2x::Pixel::asRGBA());
 }
 
-PixelIterator PixelIterator::operator+(const wkt::math::vec2& offset)
-{
-    return PixelIterator(this->ss, this->pos + offset);
-}
-
 const PixelIterator PixelIterator::operator+(const wkt::math::vec2& offset) const
 {
     return PixelIterator(this->ss, this->pos + offset);

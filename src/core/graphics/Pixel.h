@@ -39,7 +39,6 @@ public:
     PixelIterator(PixelIterator&&) = default;
 
 public:
-    PixelIterator operator+(const wkt::math::vec2& offset);
     const PixelIterator operator+(const wkt::math::vec2& offset) const;
     ColorRef operator*();
     const ColorRef operator*() const;

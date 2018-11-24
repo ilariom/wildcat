@@ -35,18 +35,15 @@ public:
     { 
         s2x::log("INIT!");
         auto& entity = *getEntity();
-        auto jsptr = *entity.query<JSON>();
-        JSON js = *jsptr;
-        js["hello"] = "world";
-        s2x::log(js["hello"].asString());
 
-        // auto transform = *entity.query<Transform>();
-        // transform->setScale(.25f);
-        // auto sprite = *entity.query<Sprite>();
-        // sprite->shade(wkt::shaders::blackAndWhite(.3f, .3f, .4f));
+        auto sprite = *entity.query<Sprite>();
+        // sprite->shade(wkt::pixmanip::blackAndWhite(.3f, .3f, .4f));
 
         auto mouseRecv = std::make_shared<MouseReceiver>();
-        mouseRecv->onButton = [this] (const wkt::events::MouseButtonEvent& ev) {
+        mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
+            if(ev.event == wkt::events::ButtonEvent::UP)
+                sprite->shade(wkt::pixmanip::darken(.9f));
+            
             s2x::log("CLICK");
         };
 
@@ -91,7 +88,6 @@ void MainActivity::onStart()
     auto mt = std::make_shared<Transform>();
     entity += node;
     entity += mt;
-    entity += std::make_shared<Mover>();
     entity += std::make_shared<JSON>();
     auto s = std::make_shared<Sprite>("urban.jpg");
     entity += s;
@@ -109,6 +105,7 @@ void MainActivity::onStart()
     ninja += ninjan;
     ninja += ninjat;
     ninja += ninjas;
+    ninja += std::make_shared<Mover>();
 
     // auto t1 = std::make_shared<Transform>();
     // auto t2 = std::make_shared<Transform>();
