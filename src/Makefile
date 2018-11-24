@@ -7,11 +7,11 @@ SRCS := $(shell find $(SRC_DIRS) -name "*.cc")
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-INC_DIRS := $(shell find $(SRC_DIRS) -type d) -I/usr/local/
+INC_DIRS := $(shell find $(SRC_DIRS) -type d) /usr/ /usr/local/
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
-SDL_DEPS := -lSDL2 -lSDL2_image
+SDL_DEPS := -lSDL2 -lSDL2_image -lSDL2_ttf
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -g -o $@ $(LDFLAGS) $(SDL_DEPS)

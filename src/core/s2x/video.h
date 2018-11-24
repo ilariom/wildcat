@@ -33,10 +33,7 @@ inline Size sizeFromSDLRect(const SDL_Rect &r)
     return { r.w, r.h };
 }
 
-struct Color
-{
-    Uint8 r, g, b, a;
-};
+using Color = SDL_Color;
 
 class Window
 {
@@ -143,6 +140,8 @@ public:
     {
         this->surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
     }
+
+    Surface(SDL_Surface* srf) : surface(srf) { }
 
     inline Surface(const std::string& filename);
     ~Surface() { if(this->surface) SDL_FreeSurface(this->surface); }

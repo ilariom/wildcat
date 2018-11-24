@@ -24,6 +24,14 @@ SmartSurface::SmartSurface(const std::string& filename)
     assert(*this);
 }
 
+SmartSurface::SmartSurface(const s2x::Surface& srf)
+{
+    this->commonSurface = std::make_shared<s2x::Surface>(srf);
+    this->activeSurface = this->commonSurface.get();
+    auto& texCache = TextureCache::getInstance();
+    this->commonTexture = std::make_shared<s2x::Texture>(*texCache.renderer(), *this->commonSurface);
+}
+
 SmartSurface::SmartSurface(const SmartSurface& ss)
 {
     this->filename = ss.filename;

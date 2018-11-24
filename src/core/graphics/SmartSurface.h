@@ -18,7 +18,7 @@ class SmartSurface
     
 public:
     explicit SmartSurface(const std::string& filename);
-
+    SmartSurface(const s2x::Surface&);
     SmartSurface(const SmartSurface&);
 
 public:

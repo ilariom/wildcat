@@ -114,9 +114,11 @@ inline std::ostream& operator<<(std::ostream& os, const Color& c)
 
 namespace colors
 {
-    extern const Color red;
-    extern const Color green;
-    extern const Color blue;
+    extern const Color RED;
+    extern const Color GREEN;
+    extern const Color BLUE;
+    extern const Color WHITE;
+    extern const Color BLACK;
 }
 
 }}

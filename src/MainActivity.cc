@@ -21,6 +21,7 @@
 #include "core/pixmanip/pixmanip.h"
 #include "core/components/JSON.h"
 #include "core/components/Crowd.h"
+#include "core/components/Text.h"
 #include <memory>
 
 using namespace wkt::components;
@@ -106,6 +107,16 @@ void MainActivity::onStart()
     ninja += ninjat;
     ninja += ninjas;
     ninja += std::make_shared<Mover>();
+
+    auto& txten = scene->getDefaultSceneGraph().entityManager().make();
+    auto txtent = std::make_shared<Transform>();
+    auto txtenn = std::make_shared<Node>();
+    node->appendChild(txtenn);
+    auto text = std::make_shared<Text>("../res/FiraCode-Bold.ttf", 32);
+    text->write("Hello world!");
+    txten += txtent;
+    txten += txtenn;
+    txten += text;
 
     // auto t1 = std::make_shared<Transform>();
     // auto t2 = std::make_shared<Transform>();

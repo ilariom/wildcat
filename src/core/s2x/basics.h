@@ -2,6 +2,8 @@
 #define _S2X_BASICS_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <functional>
 #include <memory>
@@ -13,14 +15,26 @@ namespace s2x
 class Context
 {
 public:
-    explicit Context(int flags) { SDL_Init(flags); }
-    ~Context() { SDL_Quit(); }
+    explicit inline Context(int flags);
+    inline ~Context();
     Context(const Context &) = delete;
     Context(Context &&) = delete;
 
     Context &operator=(const Context &) = delete;
     Context &operator=(Context &&) = delete;
 };
+
+inline Context::Context(int flags) 
+{ 
+    SDL_Init(flags); 
+    IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF);
+    TTF_Init();
+}
+
+inline Context::~Context()
+{
+    SDL_Quit();
+}
 
 class Subsystem
 {
