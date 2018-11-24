@@ -1,6 +1,5 @@
 #include "MainActivity.h"
 #include "core/s2x/basics.h"
-#include "core/globals/Director.h"
 #include "core/globals/Scene.h"
 #include "core/globals/SceneGraph.h"
 #include "core/ecs/Entity.h"
@@ -89,32 +88,51 @@ void MainActivity::onStart()
     auto scene = std::make_shared<wkt::scene::Scene>();
     auto& entity = scene->getDefaultSceneGraph().entityManager().make();
     auto node = std::make_shared<Node>();
+    auto mt = std::make_shared<Transform>();
     entity += node;
-    entity += std::make_shared<Transform>();
-    // entity += std::make_shared<Sprite>("ninja.png");
+    entity += mt;
     entity += std::make_shared<Mover>();
     entity += std::make_shared<JSON>();
+    auto s = std::make_shared<Sprite>("urban.jpg");
+    entity += s;
+    float sc = 640.f / s->size().width;
+    mt->setScale(sc);
     scene->getDefaultSceneGraph().setRoot(node);
-    auto t1 = std::make_shared<Transform>();
-    auto t2 = std::make_shared<Transform>();
-    t1->setPosition({200, 100});
-    t1->setScale(.5f);
 
-    t2->setScale(.15f);
+    auto& ninja = scene->getDefaultSceneGraph().entityManager().make();
+    auto ninjat = std::make_shared<Transform>();
+    auto ninjan = std::make_shared<Node>();
+    auto ninjas = std::make_shared<Sprite>("ninja.png");
+    node->appendChild(ninjan);
+    // ninjat->setScale(1.f / sc);
+    ninjat->setPosition({320.f / sc, 0});
+    ninja += ninjan;
+    ninja += ninjat;
+    ninja += ninjas;
 
-    // Spectator sp1 = makeSpectator("ninja.png", *t1);
-    // Spectator sp2 = makeSpectator("ninja.png", *t2);
+    // auto t1 = std::make_shared<Transform>();
+    // auto t2 = std::make_shared<Transform>();
+    // t1->setPosition({200, 100});
+    // t1->setScale(1);
+    // t2->setScale(.5f);
 
-    auto crowd = std::make_shared<Crowd>();
-    crowd->emplace("ninja.png", *t1);
-    crowd->emplace("ninja.png", *t2);
+    // auto crowd = std::make_shared<Crowd>();
+    // crowd->emplace("ninja.png", *t1);
+    // crowd->emplace("ninja.png", *t2);
 
-    entity += crowd;
+    // auto& e2 = scene->getDefaultSceneGraph().entityManager().make();
+    // auto e2node = std::make_shared<Node>();
+    // auto e2tr = std::make_shared<Transform>();
+    // // node->appendChild(e2node);
+    // e2tr->setPosition({640, 480});
+    // e2 += crowd;
+    // e2 += e2node;
+    // e2 += e2tr;
 
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::ScriptSystem>();
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
 
-    wkt::Director::getInstance().runScene(scene);
+    wkt::scene::runScene(scene);
     s2x::log("START!");
 }
 

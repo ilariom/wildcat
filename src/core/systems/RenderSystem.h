@@ -3,6 +3,7 @@
 
 #include "core/ecs/System.h"
 #include "core/components/Node.h"
+#include "graphics/Director.h"
 
 namespace wkt {
 namespace systems
@@ -15,6 +16,10 @@ public:
 
 public:
     bool operator()(wkt::components::Node&);
+    void setDirector(wkt::gph::Director* director) { this->director = director; }
+
+private:
+    const wkt::gph::Director* director;
 };
 
 }}

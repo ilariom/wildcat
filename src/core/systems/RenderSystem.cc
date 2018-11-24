@@ -2,7 +2,6 @@
 #include "ecs/Drawable.h"
 #include "graphics/TextureCache.h"
 #include "components/Transform.h"
-#include "s2x/video.h"
 #include <memory>
 
 using namespace wkt::ecs;
@@ -35,13 +34,13 @@ bool RenderSystem::operator()(wkt::components::Node& node)
         return true;
 
     auto transform = *transforms;
-    s2x::Renderer* renderer = wkt::gph::TextureCache::getInstance().renderer();
+    const wkt::gph::Director* dir = this->director;
 
-    std::for_each(drawables.begin(), drawables.end(), [&transform, renderer] (std::shared_ptr<Drawable>& d) {
+    std::for_each(drawables.begin(), drawables.end(), [&transform, dir] (std::shared_ptr<Drawable>& d) {
         if(!d->isVisible())
             return;
-        
-        d->draw(*renderer, *transform);
+
+        d->draw(*dir, *transform);
     });
     
     return true;

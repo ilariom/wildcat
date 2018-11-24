@@ -59,6 +59,9 @@ inline void Scene::erase(Scene::SceneGraphId id)
     this->sceneGraphs.erase(this->sceneGraphs.begin() + id);
 }
 
+wkt::scene::Scene& getRunningScene();
+void runScene(std::shared_ptr<wkt::scene::Scene> scene);
+
 }}
 
 #endif
