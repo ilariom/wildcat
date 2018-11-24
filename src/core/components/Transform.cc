@@ -20,19 +20,20 @@ namespace
 
 Coords Transform::getWorldCoordinates() const 
 {
-    Coords o = this->parent;
-    o = this->parent * this->local;
+    Coords o = this->parent * this->local;
     float s = sinf(toRadians(o.rotation));
     float c = cosf(toRadians(o.rotation));
 
     wkt::math::mat2 m {
-        { c * o.scaleX, s * o.scaleY },
-        { -s * o.scaleX, c * o.scaleY }
+        { c, s },
+        { -s, c }
     };
 
     o.localOrigin = this->local.localOrigin;
     o.rotationAnchor = this->local.rotationAnchor + o.localOrigin;
     o.position = this->parent.position + this->parent.localOrigin + m.transform(this->local.position);
+    o.position.x *= this->parent.scaleX;
+    o.position.y *= this->parent.scaleY;
     return o;
 }
 

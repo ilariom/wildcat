@@ -9,7 +9,7 @@ void Director::shot(SmartSurface& ss, const wkt::components::Transform& transfor
     assert(this->camera != nullptr);
 
     auto wcoords = transform.getWorldCoordinates();
-    auto scoords = this->camera->getScreenCoordinates(transform).getCoordinates();
+    auto scoords = this->camera->getScreenCoordinates(transform).getWorldCoordinates();
     auto sz = ss.size();
     auto& texture = ss.getTexture();
 

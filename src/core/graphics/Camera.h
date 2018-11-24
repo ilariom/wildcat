@@ -22,9 +22,9 @@ public:
     inline wkt::components::Transform getScreenCoordinates(const wkt::components::Transform& t) const;
 
 private:
-    wkt::math::vec2 pos;
+    wkt::math::vec2 pos {0, 0};
     wkt::math::Size sz;
-    float rot;
+    float rot = 0;
 };
 
 inline wkt::components::Transform Camera::getScreenCoordinates(const wkt::components::Transform& t) const
