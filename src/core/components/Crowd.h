@@ -31,8 +31,15 @@ public:
 
     void draw(const wkt::gph::Director&, const Transform&) override;
 
+    void setOpacity(uint8_t);
+    void setColor(const wkt::gph::Color&);
+    uint8_t getOpacity() const { return this->opacity; }
+    const wkt::gph::Color& getColor() const { return this->color; }
+    
 private:
     std::unordered_map<SpectatorID, Spectator> spectators;
+    uint8_t opacity = 255;
+    wkt::gph::Color color = wkt::gph::colors::WHITE;
 };
 
 REGISTER_DRAWABLE(Crowd, -12);

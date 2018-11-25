@@ -34,6 +34,11 @@ SmartSurface::SmartSurface(const s2x::Surface& srf)
 
 SmartSurface::SmartSurface(const SmartSurface& ss)
 {
+    operator=(ss);
+}
+
+SmartSurface& SmartSurface::operator=(const SmartSurface& ss)
+{
     this->filename = ss.filename;
     this->commonSurface = ss.commonSurface;
     this->commonTexture = ss.commonTexture;
@@ -52,6 +57,8 @@ SmartSurface::SmartSurface(const SmartSurface& ss)
     }
 
     this->surfaceModified = false;
+
+    return *this;
 }
 
 s2x::Texture& SmartSurface::getTexture()

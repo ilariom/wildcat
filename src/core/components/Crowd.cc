@@ -60,4 +60,20 @@ void Crowd::draw(const wkt::gph::Director& d, const Transform& t)
     }
 }
 
+void Crowd::setOpacity(uint8_t opacity)
+{
+    this->opacity = opacity;
+
+    for(auto& p : this->spectators)
+        sprite(p.second).setOpacity(opacity);
+}
+
+void Crowd::setColor(const wkt::gph::Color& color)
+{
+    this->color = color;
+
+    for(auto& p : this->spectators)
+        sprite(p.second).setColor(color);
+}
+
 }}

@@ -20,6 +20,11 @@ public:
     explicit SmartSurface(const std::string& filename);
     SmartSurface(const s2x::Surface&);
     SmartSurface(const SmartSurface&);
+    SmartSurface(SmartSurface&&) = default;
+    ~SmartSurface() = default;
+ 
+    SmartSurface& operator=(const SmartSurface&);
+    SmartSurface& operator=(SmartSurface&&) = default;
 
 public:
     inline PixelIterator operator()(int x, int y);
