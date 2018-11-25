@@ -1,7 +1,7 @@
 #ifndef _WKT_SCENE_GRAPH_H
 #define _WKT_SCENE_GRAPH_H
 
-#include "managers/ManagersCollector.h"
+#include "managers/ECSContext.h"
 #include "components/Node.h"
 #include "core/graphics/SurfaceCache.h"
 #include "graphics/Camera.h"
@@ -14,7 +14,7 @@ namespace wkt {
 namespace scene
 {
 
-class SceneGraph final : public wkt::managers::ManagersCollector
+class SceneGraph final : public wkt::managers::ECSContext
 {
 public:
     inline SceneGraph();

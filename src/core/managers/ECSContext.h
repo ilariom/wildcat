@@ -9,7 +9,7 @@ namespace wkt {
 namespace managers
 {
 
-class ManagersCollector
+class ECSContext
 {
 public:
     EntityManager& entityManager() { return this->em; }
@@ -22,7 +22,7 @@ private:
     SystemsManager sm;
 };
 
-inline void ManagersCollector::runComponentSystems()
+inline void ECSContext::runComponentSystems()
 {
     this->sm.run(this->em.begin(), this->em.end());
 }

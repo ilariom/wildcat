@@ -44,8 +44,6 @@ public:
         mouseRecv->onButton = [this, sprite] (const wkt::events::MouseButtonEvent& ev) {
             if(ev.event == wkt::events::ButtonEvent::UP)
                 sprite->shade(wkt::pixmanip::darken(.9f));
-            
-            s2x::log("CLICK");
         };
 
         entity += mouseRecv;

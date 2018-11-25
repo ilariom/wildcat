@@ -2,7 +2,7 @@
 #define _WKT_SCENE_H
 
 #include "SceneGraph.h"
-#include "managers/ManagersCollector.h"
+#include "managers/ECSContext.h"
 #include <vector>
 #include <algorithm>
 
@@ -10,7 +10,7 @@ namespace wkt {
 namespace scene
 {
 
-class Scene final : public wkt::managers::ManagersCollector
+class Scene final : public wkt::managers::ECSContext
 {
 public:
     using SceneGraphId = std::vector<SceneGraph>::size_type;
