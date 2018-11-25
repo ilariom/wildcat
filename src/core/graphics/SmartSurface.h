@@ -28,6 +28,10 @@ public:
     wkt::math::Size size() const { return { (float)this->activeSurface->size().width, (float)this->activeSurface->size().height }; }
     void resetSurface();
     const std::string& getPath() const { return this->filename; }
+    void setColor(const Color& color) { this->color = color; }
+    const Color& getColor() const { return this->color; }
+    void setOpacity(uint8_t opacity) { this->opacity = opacity; }
+    uint8_t getOpacity() const { return this->opacity; }
 
     explicit operator bool() const { return static_cast<SDL_Surface*>(*this->activeSurface) != nullptr; }
 
@@ -43,6 +47,8 @@ private:
     bool surfaceModified = false;
     bool isAlreadyCloned = false;
     std::string filename;
+    Color color = colors::WHITE;
+    uint8_t opacity = 255;
 };
 
 inline PixelIterator SmartSurface::operator()(int x, int y)

@@ -21,7 +21,7 @@ public:
 
     operator s2x::Color() const
     {
-        constexpr float factor = 256.f;
+        constexpr float factor = 255.f;
         s2x::Color c;
         c.r = (Uint8)(factor * this->r);
         c.g = (Uint8)(factor * this->g);

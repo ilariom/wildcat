@@ -308,6 +308,13 @@ public:
 public:
     operator SDL_Texture*() const { return this->resource; }
 
+    void setOpacity(Uint8 alpha) { SDL_SetTextureAlphaMod(*this, alpha); }
+    inline Uint8 getOpacity() const;
+    void setColor(SDL_Color c) { SDL_SetTextureColorMod(*this, c.r, c.g, c.b); }
+    inline SDL_Color getColor() const;
+    void setBlendMode(SDL_BlendMode bm) { SDL_SetTextureBlendMode(*this, bm); }
+    inline SDL_BlendMode getBlendMode() const;
+
 private:
     SDL_Texture* resource = nullptr;
     int height;
@@ -339,6 +346,27 @@ inline Texture& Texture::operator=(Texture&& tex)
     std::swap(this->resource, tex.resource);
     SDL_SetTextureBlendMode(this->resource, SDL_BLENDMODE_BLEND);
     return *this;
+}
+
+inline Uint8 Texture::getOpacity() const
+{
+    Uint8 alpha;
+    SDL_GetTextureAlphaMod(*this, &alpha);
+    return alpha;
+}
+
+inline SDL_Color Texture::getColor() const
+{
+    SDL_Color c;
+    SDL_GetTextureColorMod(*this, &c.r, &c.g, &c.b);
+    return c;
+}
+
+inline SDL_BlendMode Texture::getBlendMode() const
+{
+    SDL_BlendMode bm;
+    SDL_GetTextureBlendMode(*this, &bm);
+    return bm;
 }
 
 inline Texture& Texture::operator=(const Surface& surface)

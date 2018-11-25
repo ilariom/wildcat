@@ -57,7 +57,11 @@ SmartSurface::SmartSurface(const SmartSurface& ss)
 s2x::Texture& SmartSurface::getTexture()
 {
     if(!this->isAlreadyCloned || this->activeSurface == this->commonSurface.get())
+    {
+        this->commonTexture->setColor(this->color);
+        this->commonTexture->setOpacity(this->opacity);
         return *this->commonTexture;
+    }
 
     if(this->surfaceModified)
     {
@@ -65,6 +69,8 @@ s2x::Texture& SmartSurface::getTexture()
         this->surfaceModified = false;
     }
 
+    this->localTexture->setColor(this->color);
+    this->localTexture->setOpacity(this->opacity);
     return *this->localTexture;
 }
 
