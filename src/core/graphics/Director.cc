@@ -20,12 +20,21 @@ void Director::shot(SmartSurface& ss, const wkt::components::Transform& transfor
         (int)(sz.height)
     };
 
-    SDL_Point ra = { 
-        (int)scoords.rotationAnchor.x, 
-        (int)scoords.rotationAnchor.y 
+    auto cameraBB = this->camera->getBoundingBox();
+    wkt::math::Rect objBB = {
+        scoords.position,
+        sz
     };
 
-    this->ren.copy(texture, r, scoords.rotation, ra, wcoords.scaleX, wcoords.scaleY);
+    if(cameraBB.intersect(objBB))
+    {
+        SDL_Point ra = { 
+            (int)scoords.rotationAnchor.x, 
+            (int)scoords.rotationAnchor.y 
+        };
+
+        this->ren.copy(texture, r, scoords.rotation, ra, wcoords.scaleX, wcoords.scaleY);
+    }
 }
 
 }}

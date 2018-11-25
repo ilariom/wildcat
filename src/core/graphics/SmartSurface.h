@@ -27,6 +27,7 @@ public:
     s2x::Texture& getTexture();
     wkt::math::Size size() const { return { (float)this->activeSurface->size().width, (float)this->activeSurface->size().height }; }
     void resetSurface();
+    const std::string& getPath() const { return this->filename; }
 
     explicit operator bool() const { return static_cast<SDL_Surface*>(*this->activeSurface) != nullptr; }
 
