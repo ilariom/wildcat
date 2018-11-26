@@ -1,7 +1,8 @@
-#include "Drawable.h"
+#include "ShadedDrawable.h"
 
 namespace wkt {
-namespace ecs {
+namespace gph 
+{
 
 void ShadedDrawable::setBuffersTo(wkt::gph::SmartSurface* ss1, wkt::gph::SmartSurface* ss2)
 {

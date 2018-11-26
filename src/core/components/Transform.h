@@ -14,7 +14,6 @@ namespace components
 struct Coords
 {
     wkt::math::vec2 position { 0, 0 };
-    wkt::math::vec2 localOrigin { 0, 0 };
     wkt::math::vec2 rotationAnchor { 0, 0 };
     float rotation = 0;
     float scaleX = 1;
@@ -37,7 +36,6 @@ public:
     inline void setPosition(const wkt::math::vec2& position);
     inline void setRotation(float rotation);
     inline void setRotationAnchor(const wkt::math::vec2& ra);
-    inline void setLocalOrigin(const wkt::math::vec2& lo);
     inline void setScale(float scale);
     inline void setScaleX(float scaleX);
     inline void setScaleY(float scaleY);
@@ -46,7 +44,6 @@ public:
     const wkt::math::vec2& getPosition() const { return this->local.position; }
     float getRotation() const { return this->local.rotation; }
     const wkt::math::vec2& getRotationAnchor() const { return this->local.rotationAnchor; }
-    const wkt::math::vec2& getLocalOrigin() const { return this->local.localOrigin; }
     float getScaleX() const { return this->local.scaleX; }
     float getScaleY() const { return this->local.scaleY; }
     float getScale() const { assert(getScaleX() == getScaleY()); return getScaleX(); }
@@ -91,11 +88,6 @@ inline void Transform::setRotation(float rotation)
 inline void Transform::setRotationAnchor(const wkt::math::vec2& ra)
 {
     this->local.rotationAnchor = ra;
-}
-
-inline void Transform::setLocalOrigin(const wkt::math::vec2& lo)
-{
-    this->local.localOrigin = lo;
 }
 
 inline void Transform::setScale(float scale)

@@ -9,7 +9,7 @@ void Director::shot(SmartSurface& ss, const wkt::components::Transform& transfor
     assert(this->camera != nullptr);
 
     auto wcoords = transform.getWorldCoordinates();
-    auto scoords = this->camera->getScreenCoordinates(transform).getWorldCoordinates();
+    auto scoords = this->camera->getScreenCoordinates(transform).getCoordinates();
     auto sz = ss.size();
     auto& texture = ss.getTexture();
 
@@ -29,8 +29,8 @@ void Director::shot(SmartSurface& ss, const wkt::components::Transform& transfor
     if(cameraBB.intersect(objBB))
     {
         SDL_Point ra = { 
-            (int)scoords.rotationAnchor.x, 
-            (int)scoords.rotationAnchor.y 
+            (int)(scoords.rotationAnchor.x * sz.width), 
+            (int)(scoords.rotationAnchor.y * sz.height)
         };
 
         this->ren.copy(texture, r, scoords.rotation, ra, wcoords.scaleX, wcoords.scaleY);

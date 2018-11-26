@@ -18,6 +18,16 @@ inline float clampNorm(float val)
     return clamp(val, .0f, 1.f);
 }
 
+constexpr inline float toDegree(float angleinRadians)
+{
+    return 57.2958f * angleinRadians;
+}
+
+constexpr inline float toRadians(float angleInDegrees)
+{
+    return 0.0174533f * angleInDegrees;
+}
+
 }}
 
 #endif

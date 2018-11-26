@@ -1,7 +1,7 @@
 #ifndef _WKT_SPRITE_H
 #define _WKT_SPRITE_H
 
-#include "ecs/Drawable.h"
+#include "graphics/ShadedDrawable.h"
 #include "graphics/SmartSurface.h"
 #include "graphics/Color.h"
 #include "math/wktmath.h"
@@ -11,7 +11,7 @@ namespace wkt {
 namespace components
 {
 
-class Sprite : public wkt::ecs::ShadedDrawable
+class Sprite : public wkt::gph::ShadedDrawable
 {
 public:
     Sprite(const std::string& filename) : ss1(filename), ss2(ss1) { setBuffersTo(&ss1, &ss2); }

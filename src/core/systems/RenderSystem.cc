@@ -21,7 +21,7 @@ bool RenderSystem::operator()(wkt::components::Node& node)
     Entity* entity = node.getEntity();
 
     if(!entity)
-        return true;
+        return false;
 
     auto transforms = entity->query<Transform>();
     

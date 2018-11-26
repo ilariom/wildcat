@@ -36,6 +36,7 @@ inline wkt::components::Transform Camera::getScreenCoordinates(const wkt::compon
     wkt::components::Transform scrCoords;
     scrCoords.setPosition(obj.position - position());
     scrCoords.setRotation(obj.rotation - rotation());
+    scrCoords.setRotationAnchor(obj.rotationAnchor);
 
     return scrCoords;
 }

@@ -1,40 +1,29 @@
 #include "Transform.h"
+#include "math/numerical.h"
 
 namespace wkt
 {
 namespace components
 {
 
-namespace 
-{
-    constexpr float toDegree(float angleinRadians)
-    {
-        return 57.2958f * angleinRadians;
-    }
-
-    constexpr float toRadians(float angleInDegrees)
-    {
-        return 0.0174533f * angleInDegrees;
-    }
-}
-
 Coords Transform::getWorldCoordinates() const 
 {
-    Coords o = this->parent * this->local;
-    float s = sinf(toRadians(o.rotation));
-    float c = cosf(toRadians(o.rotation));
+    Coords o;
+    float angle = wkt::math::toRadians(this->parent.rotation);
+    float s = sinf(angle);
+    float c = cosf(angle);
 
-    wkt::math::mat2 m {
-        { c, s },
-        { -s, c }
-    };
+    float x = this->local.position.x;
+    float y = this->local.position.y;
+    o.position.x = this->local.position.x * c * this->parent.scaleX + this->local.position.y * s;
+    o.position.y = this->local.position.x * s + this->local.position.y * -c * this->parent.scaleY;
+    o.position += this->parent.position;
+    o.rotation = this->parent.rotation + this->local.rotation;
+    o.rotationAnchor = this->local.rotationAnchor;
+    o.scaleX = this->parent.scaleX * this->local.scaleX;
+    o.scaleY = this->parent.scaleY * this->local.scaleY;
 
-    o.localOrigin = this->local.localOrigin;
-    o.rotationAnchor = this->local.rotationAnchor + o.localOrigin;
-    o.position = this->parent.position + this->parent.localOrigin + m.transform(this->local.position);
-    o.position.x *= this->parent.scaleX;
-    o.position.y *= this->parent.scaleY;
-    return o;
+    return o; 
 }
 
 Coords& Coords::operator*=(const Coords& other)
