@@ -74,6 +74,12 @@ inline float operator*(const vec2& a, const vec2& b)
     return a.x * b.x + a.y * b.y;
 }
 
+inline std::ostream& operator<<(std::ostream& os, const vec2& v)
+{
+    os << "(" << v.x << ", " << v.y << ")";
+    return os;
+}
+
 class mat2
 {
 public:
@@ -183,6 +189,12 @@ inline mat2 mat2::operator*(const mat2& m)
     return res;
 }
 
+inline std::ostream& operator<<(std::ostream& os, const mat2& m)
+{
+    os << "[" << m.firstColumn() << ", " << m.secondColumn() << "]";
+    return os;
+}
+
 
 struct Size
 {
@@ -218,6 +230,12 @@ inline bool operator==(const Size& a, const Size& b)
 inline bool operator!=(const Size& a, const Size& b)
 {
     return !(a == b);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Size& s)
+{
+    os << "<" << s.width << ", " << s.height << ">";
+    return os;
 }
 
 struct Rect
@@ -258,6 +276,12 @@ inline bool operator==(const Rect& a, const Rect& b)
 inline bool operator!=(const Rect& a, const Rect& b)
 {
     return !(a == b);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Rect& v)
+{
+    os << "{" << v.origin << ", " << v.size << "}";
+    return os;
 }
 
 }}
