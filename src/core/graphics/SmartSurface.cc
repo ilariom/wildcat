@@ -7,7 +7,7 @@ namespace wkt {
 namespace gph
 {
 
-SmartSurface::SmartSurface(const std::string& filename)
+SmartSurface::SmartSurface(const std::string& filename, const wkt::math::Rect& crop)
 {
     this->filename = "../res/" + filename;
     auto& surfaceCache = SurfaceCache::getInstance();
@@ -20,6 +20,7 @@ SmartSurface::SmartSurface(const std::string& filename)
         texCache.insert(this->filename, std::make_shared<s2x::Texture>(*texCache.renderer(), *this->commonSurface));
 
     this->commonTexture = texCache.at(this->filename);
+    this->texRect = crop;
 
     assert(*this);
 }
@@ -30,6 +31,10 @@ SmartSurface::SmartSurface(const s2x::Surface& srf)
     this->activeSurface = this->commonSurface.get();
     auto& texCache = TextureCache::getInstance();
     this->commonTexture = std::make_shared<s2x::Texture>(*texCache.renderer(), *this->commonSurface);
+    this->texRect.size = {
+        (float) srf.size().width,
+        (float) srf.size().height
+    };
 }
 
 SmartSurface::SmartSurface(const SmartSurface& ss)
@@ -57,6 +62,7 @@ SmartSurface& SmartSurface::operator=(const SmartSurface& ss)
     }
 
     this->surfaceModified = false;
+    this->texRect = ss.texRect;
 
     return *this;
 }
@@ -88,7 +94,11 @@ void SmartSurface::copyOnAccess()
     if(this->isAlreadyCloned)
         return;
     
-    this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*this->commonSurface));
+    if(this->texRect.size.width != 0 && this->texRect.size.height != 0)
+        this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*this->commonSurface, this->texRect));
+    else
+        this->localSurface = std::make_unique<s2x::Surface>(s2x::Surface(*this->commonSurface));
+    
     this->activeSurface = this->localSurface.get();
     this->localTexture = std::make_unique<s2x::Texture>(*TextureCache::getInstance().renderer(), *this->localSurface);
     this->isAlreadyCloned = true;

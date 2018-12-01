@@ -1,6 +1,7 @@
 #ifndef _WKT_MATH_H
 #define _WKT_MATH_H
 
+#include "s2x/s2x_types.h"
 #include <math.h>
 #include <ostream>
 
@@ -200,8 +201,18 @@ struct Size
 {
     Size() = default;
     Size(float width, float height) : width(width), height(height) {}
+    Size(const s2x::Size& sdls) : width((float)sdls.width), height((float)sdls.height) {}
+
     explicit Size(const vec2 &v) : width(v.x), height(v.y) {}
     explicit operator vec2() const { return vec2{this->width, this->height}; }
+
+    operator s2x::Size() const
+    {
+        return {
+            (int) this->width,
+            (int) this->height
+        };
+    }
 
     float width = 0;
     float height = 0;
@@ -244,12 +255,23 @@ struct Rect
     Rect(const vec2& origin, const Size& size)
         : origin(origin), size(size) {}
     Rect(float x, float y, float width, float height) : origin{x, y}, size(width, height) {}
+    Rect(const SDL_Rect& sdlr) : origin{(float)sdlr.x, (float)sdlr.y}, size((float)sdlr.w, (float)sdlr.h) {}
 
     vec2 origin;
     Size size;
 
     inline bool intersect(const Rect& rect);
     inline bool intersect(const vec2& v);
+
+    operator SDL_Rect() const 
+    {
+        return {
+            (int) this->origin.y,
+            (int) this->origin.x,
+            (int) this->size.width,
+            (int) this->size.height
+        };
+    }
 };
 
 inline bool Rect::intersect(const Rect& rect)

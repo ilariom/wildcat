@@ -1,6 +1,7 @@
 #ifndef _S2X_VIDEO_H
 #define _S2X_VIDEO_H
 
+#include "s2x_types.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <string>
@@ -9,31 +10,6 @@
 
 namespace s2x
 {
-
-using Point = SDL_Point;
-using Rect = SDL_Rect;
-
-struct Size
-{
-    int width, height;
-};
-
-inline SDL_Rect toSDLRect(const Point& origin, const Size& size)
-{
-    return { origin.x, origin.y, size.width, size.height };
-}
-
-inline Point pointFromSDLRect(const SDL_Rect& r)
-{
-    return { r.x, r.y };
-}
-
-inline Size sizeFromSDLRect(const SDL_Rect &r)
-{
-    return { r.w, r.h };
-}
-
-using Color = SDL_Color;
 
 class Window
 {
@@ -144,6 +120,7 @@ public:
     Surface(SDL_Surface* srf) : surface(srf) { }
 
     inline Surface(const std::string& filename);
+    inline Surface(const Surface&, const SDL_Rect&);
     ~Surface() { if(this->surface) SDL_FreeSurface(this->surface); }
 
     inline Surface(const Surface&);
@@ -159,7 +136,7 @@ public:
     Size size() const { return { this->surface->w, this->surface->h }; }
 
     void fill(const Color& c) { SDL_FillRect(*this, nullptr, SDL_MapRGBA(this->surface->format, c.r, c.g, c.b, c.a)); }
-    void fill(const Color &c, const Rect &r) { SDL_FillRect(*this, &r, SDL_MapRGBA(this->surface->format, c.r, c.g, c.b, c.a)); }
+    void fill(const Color& c, const Rect& r) { SDL_FillRect(*this, &r, SDL_MapRGBA(this->surface->format, c.r, c.g, c.b, c.a)); }
 
     inline void setClip(int x, int y, int width, int height);
     inline SDL_Rect getClip() const;
@@ -179,6 +156,12 @@ inline Surface::Surface(const std::string& filename)
     const char* cstr = filename.c_str();
 
     this->surface = ufn.substr(ufn.size() - 3) == "bmp" ? SDL_LoadBMP(cstr) : IMG_Load(cstr);
+}
+
+inline Surface::Surface(const Surface& srf, const SDL_Rect& rect)
+{
+    this->surface = SDL_CreateRGBSurfaceWithFormat(0, rect.w, rect.h, 32, srf.pixelFormat()->format);
+    SDL_BlitSurface(srf, &rect, this->surface, nullptr);
 }
 
 inline Surface::Surface(const Surface& srf)
@@ -273,10 +256,12 @@ public:
             const double angle,
             const SDL_Point& rotationAnchor,
             float scaleX,
-            float scaleY)
+            float scaleY,
+            const SDL_Rect& texRect = {},
+            SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
         SDL_RenderSetScale(*this, scaleX, scaleY);
-        SDL_RenderCopyEx(*this, tex, NULL, &drawPos, angle, &rotationAnchor, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(*this, tex, texRect.w > 0 && texRect.h > 0 ? &texRect : NULL, &drawPos, angle, &rotationAnchor, flip);
         SDL_RenderSetScale(*this, 1, 1);
     }
 

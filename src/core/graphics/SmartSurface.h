@@ -17,7 +17,7 @@ class SmartSurface
     friend PixelIterator;
     
 public:
-    explicit SmartSurface(const std::string& filename);
+    SmartSurface(const std::string& filename, const wkt::math::Rect& crop = {});
     SmartSurface(const s2x::Surface&);
     SmartSurface(const SmartSurface&);
     SmartSurface(SmartSurface&&) = default;
@@ -30,13 +30,17 @@ public:
     inline PixelIterator operator()(int x, int y);
     inline const PixelIterator operator()(int x, int y) const;
     s2x::Texture& getTexture();
-    wkt::math::Size size() const { return { (float)this->activeSurface->size().width, (float)this->activeSurface->size().height }; }
+    inline wkt::math::Size size() const;
     void resetSurface();
     const std::string& getPath() const { return this->filename; }
+
     void setColor(const Color& color) { this->color = color; }
     const Color& getColor() const { return this->color; }
     void setOpacity(uint8_t opacity) { this->opacity = opacity; }
     uint8_t getOpacity() const { return this->opacity; }
+
+    void crop(const wkt::math::Rect& rect) { this->texRect = rect; }
+    const wkt::math::Rect& getTextureRect() const { return this->texRect; }
 
     explicit operator bool() const { return static_cast<SDL_Surface*>(*this->activeSurface) != nullptr; }
 
@@ -54,6 +58,7 @@ private:
     std::string filename;
     Color color = colors::WHITE;
     uint8_t opacity = 255;
+    wkt::math::Rect texRect;
 };
 
 inline PixelIterator SmartSurface::operator()(int x, int y)
@@ -71,6 +76,14 @@ inline const PixelIterator SmartSurface::operator()(int x, int y) const
     s2x::Pixel* pp = &p;
     *pp = (*this->activeSurface)(x, y);
     return p;
+}
+
+inline wkt::math::Size SmartSurface::size() const
+{
+    if(this->texRect.size.width > 0 && this->texRect.size.height > 0)
+        return this->texRect.size;
+
+    return this->activeSurface->size();
 }
 
 }}
