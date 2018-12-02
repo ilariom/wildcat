@@ -18,7 +18,16 @@ public:
         insert("play-music", [] (Mixer& mixer, const SoundEvent& ev) {
             mixer.playMusic(ev.msg);
         });
+
+        insert("play-fx", [this] (Mixer& mixer, const SoundEvent& ev) {
+            mixer.bindChannel(ev.msg, this->channel);
+            mixer.playChannel(this->channel);
+            this->channel = (this->channel + 1) % AudioStudio::mixer_channels;
+        });
     }
+
+private:
+    int channel = 0;
 };
 
 }}
