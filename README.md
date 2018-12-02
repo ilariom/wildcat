@@ -32,7 +32,7 @@ Systems are derived classes of ```wkt::ecs::System```. Looking at the source cod
 
 Note that, as for the *zero-overhead principle*, systems must be attached explicitly to their **ECSContext** to run. Some components may require the existence of a system to do something useful.
 Putting all together, an example of use may look like this:
-```
+```c++
     // Build a scene
     auto scene = std::make_shared<wkt::scene::Scene>();
     // Ask for an entity from the ECSContext. Entities lifecycle depends always from the EntityManager of the context.
@@ -52,7 +52,7 @@ Putting all together, an example of use may look like this:
 By looking at this snippet, we can see that the context (here, a **Scene**) manages entities and systems through the specialized managers **EntityManager** and **SystemsManager**. We can request a new entity via a ```make()``` call and destroy it through the function ```kill()``` of the manager. An entity may be copied and the copy added to another manager that can gain ownership on it through ```gain()```. You can't create an Entity using a constructor.
 Each component has a ```getEntity()``` function that returns the entity that owns it, if any. Querying components is as simple as a call to ```query<COMPONENT_TYPE>()```. Since some components of the same kind can coexist in the same entities (something called uniqueness of the component), the result of query is a vector of components of the type requested. To simplify programming, it casts to bool automatically (to test existence) and overloads ```operator*``` to return the first element.
 So, for example, we may want to do something like that:
-```
+```c++
 auto transforms = entity.query<Transform>();
 if(transforms)
     auto t = *transforms; // do something with 't', the entity transform
