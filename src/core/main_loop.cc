@@ -12,6 +12,8 @@
 #include "input/KeyboardProxy.h"
 #include "input/MouseProxy.h"
 #include "input/ActionBroadcaster.h"
+#include "audio/AudioStudio.h"
+#include "audio/basic_audio_engine.h"
 #include <chrono>
 #include <thread>
 #include <math.h>
@@ -31,7 +33,7 @@ void mainLoop()
     mainActivity.onCreate(conf);
 
     {
-        s2x::Context context(SDL_INIT_VIDEO);
+        s2x::Context context(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
         s2x::Window window(conf.appName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, conf.windowWidth, conf.windowHeight);
         s2x::Renderer renderer(window, 
             conf.hardwareAccelerated ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC : SDL_RENDERER_SOFTWARE);
@@ -82,6 +84,11 @@ void mainLoop()
         im.setMouseProxy(&mp);
 
         wkt::events::ActionBroadcaster& actionBroadcaster = im.getActionBroadcaster();
+
+        // Init audio context
+        auto& as = wkt::audio::AudioStudio::getInstance();
+        as.hire(wkt::audio::FelixTheCat());
+        as.ask("Felix The Cat");
 
         mainActivity.onStart();
 

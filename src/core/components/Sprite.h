@@ -31,6 +31,12 @@ public:
     uint8_t getOpacity() const { return this->ss1.getOpacity(); }
     const std::string& getPath() const { return this->ss1.getPath(); }
 
+    void crop(const wkt::math::Rect& r)
+    {
+        this->ss1.crop(r);
+        this->ss2.crop(r);
+    }
+
 private:
     wkt::gph::SmartSurface ss1;
     wkt::gph::SmartSurface ss2;

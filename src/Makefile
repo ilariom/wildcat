@@ -11,7 +11,7 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d) /usr/ /usr/local/
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
-SDL_DEPS := -lSDL2 -lSDL2_image -lSDL2_ttf
+SDL_DEPS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -g -o $@ $(LDFLAGS) $(SDL_DEPS)
