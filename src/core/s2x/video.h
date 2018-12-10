@@ -137,6 +137,8 @@ public:
 
     void fill(const Color& c) { SDL_FillRect(*this, nullptr, SDL_MapRGBA(this->surface->format, c.r, c.g, c.b, c.a)); }
     void fill(const Color& c, const Rect& r) { SDL_FillRect(*this, &r, SDL_MapRGBA(this->surface->format, c.r, c.g, c.b, c.a)); }
+    inline void blit(const Rect& r, const Surface& srf);
+    inline void blit(const Rect& r, const Surface& srf, float scaleX, float scaleY);
 
     inline void setClip(int x, int y, int width, int height);
     inline SDL_Rect getClip() const;
@@ -217,6 +219,21 @@ inline SDL_Rect Surface::getClip() const
     SDL_Rect r;
     SDL_GetClipRect(this->surface, &r);
     return r;
+}
+
+inline void Surface::blit(const Rect& r, const Surface& srf)
+{
+    SDL_BlitSurface(srf, nullptr, this->surface, const_cast<SDL_Rect*>(&r));
+}
+
+inline void Surface::blit(const Rect& r, const Surface& srf, float scaleX, float scaleY)
+{
+    SDL_Rect stretchRect = {
+        (int)(r.w * scaleX),
+        (int)(r.h * scaleY)
+    };
+
+    SDL_BlitSurface(srf, nullptr, this->surface, &stretchRect);
 }
 
 class Renderer

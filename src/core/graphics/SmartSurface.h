@@ -39,6 +39,8 @@ public:
     void setOpacity(uint8_t opacity) { this->opacity = opacity; }
     uint8_t getOpacity() const { return this->opacity; }
 
+    void blit(const SmartSurface& other, const wkt::math::vec2& position);
+    void blit(const SmartSurface& other, const wkt::math::vec2& position, float scaleX, float scaleY);
     void crop(const wkt::math::Rect& rect) { this->texRect = rect; }
     const wkt::math::Rect& getTextureRect() const { return this->texRect; }
 

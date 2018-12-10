@@ -12,14 +12,15 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 SDL_DEPS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+CXX_STD := --std=c++14
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) -g -o $@ $(LDFLAGS) $(SDL_DEPS)
+	$(CXX) $(CXX_STD) $(OBJS) -g -o $@ $(LDFLAGS) $(SDL_DEPS)
 
 # c++ source
 $(BUILD_DIR)/%.cc.o: %.cc
 	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -g -o $@
+	$(CXX) $(CXX_STD) $(CPPFLAGS) $(CXXFLAGS) -c $< -g -o $@
 
 
 .PHONY: clean

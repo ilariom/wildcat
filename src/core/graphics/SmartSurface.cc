@@ -112,4 +112,32 @@ void SmartSurface::resetSurface()
     this->localSurface = nullptr;
 }
 
+void SmartSurface::blit(const SmartSurface& other, const wkt::math::vec2& position)
+{
+    copyOnAccess();
+
+    SDL_Rect r = {
+        (int)position.x,
+        (int)position.y,
+        (int)other.size().width,
+        (int)other.size().height
+    };
+
+    this->activeSurface->blit(r, *other.activeSurface);
+}
+
+void SmartSurface::blit(const SmartSurface& other, const wkt::math::vec2& position, float scaleX, float scaleY)
+{
+    copyOnAccess();
+
+    SDL_Rect r = {
+        (int)position.x,
+        (int)position.y,
+        (int)other.size().width,
+        (int)other.size().height
+    };
+
+    this->activeSurface->blit(r, *other.activeSurface, scaleX, scaleY);
+}
+
 }}
