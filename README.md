@@ -19,23 +19,23 @@ The objects with the wider view are the ones that know about entities, component
 Concrete **ECSContext**s are:
 * **World**, a singleton object that lives throughout the game, 
 * **Scene**, an object that represent big chunks of the game, and
-* **SceneGraph**, objects that represent a hierarchical view of the **Scene**. This is the only **ECSContext** that handles a **Camera** and provide a **RenderSystem**.
+* **SceneGraph**, objects that represent a hierarchical view of the **Scene**. This is the only **ECSContext** that handles a **Camera** and provides a **RenderSystem**.
 
 **World** and **Scene**s are completely independent, while **SceneGraph**s must be attached to a **Scene** to make sense. More than one **SceneGraph** may be added, simplifying, for example, the separation between the *"real"* action of the game from the UI. Each **Scene** has a default **SceneGraph** that can be retrieved by a call to ```wkt::scene::getCurrentScene().getDefaultSceneGraph()```.
 The namespace ```wkt``` is where all the engine code reside. In this example the **SceneGraph** of the current scene is retrieved.
 ### Entities, components and systems
 Entities are instances of the ```wkt::ecs::Entity``` class, that assigns automatically a unique identifier to the object and manage its components. Components are derived classes of ```wkt::ecs::Component```. A component must be a copiable and moveable object registered to the engine with the macro ```REGISTER_COMPONENT(<type>, <number_id>)```. This macro is required as it will make some compile-time magic to allow type safety through internally generated type traits. Unfortunately, the C++ standard doesn't specify a way to have compile-time counters, so the *<number_id>* must be placed manually when a new component is built. Compilers often provide ```__COUNTER__``` to do that. Some libraries, such as Boost, have their own, so you should not have troubles handling that. However, as for design principle, the engine can't do that by itself. 
 Note that negative IDs are reserved.
-Systems are derived classes of ```wkt::ecs::System```. Looking at the source code, their implementation may seem a bit too much obscure, but the main point is that they exist in two kinds:
+Systems are derived classes of ```wkt::ecs::System```. Looking at the source code, their implementation may seem a bit too obscure, but the main point is that they exist in two kinds:
 * **Sequential systems**, that apply their behaviour to components through a collection of entities
 * **Hierarchical systems**, the ones that run through a tree of nodes. These are typically used when update transforms or for rendering.
 
 Note that, as for the *zero-overhead principle*, systems must be attached explicitly to their **ECSContext** to run. Some components may require the existence of a system to do something useful.
 Putting all together, an example of use may look like this:
-```
+```c++
     // Build a scene
     auto scene = std::make_shared<wkt::scene::Scene>();
-    // Ask for an entity from the ECSContext. Entities lifecycle depends always from the EntityManager of the context.
+    // Ask for an entity from the ECSContext. Entities lifecycle depend always from the EntityManager of the context.
     auto& entity = scene->getDefaultSceneGraph().entityManager().make();
     // Make some components. Note the use of shared pointers
     auto node = std::make_shared<Node>();
@@ -44,7 +44,7 @@ Putting all together, an example of use may look like this:
     entity += node;
     entity += mt;
     entity += std::make_shared<MouseReceiver>();
-    // MouseReceiver requires a system to make sense. Add that to the context
+    // MouseReceiver requires a system to make sense. Add that to the context.
     scene->getDefaultSceneGraph().systemsManager() += std::make_unique<wkt::systems::MouseReceiverSystem>();
     // Finally, run the scene
     wkt::scene::runScene(scene);
@@ -52,7 +52,7 @@ Putting all together, an example of use may look like this:
 By looking at this snippet, we can see that the context (here, a **Scene**) manages entities and systems through the specialized managers **EntityManager** and **SystemsManager**. We can request a new entity via a ```make()``` call and destroy it through the function ```kill()``` of the manager. An entity may be copied and the copy added to another manager that can gain ownership on it through ```gain()```. You can't create an Entity using a constructor.
 Each component has a ```getEntity()``` function that returns the entity that owns it, if any. Querying components is as simple as a call to ```query<COMPONENT_TYPE>()```. Since some components of the same kind can coexist in the same entities (something called uniqueness of the component), the result of query is a vector of components of the type requested. To simplify programming, it casts to bool automatically (to test existence) and overloads ```operator*``` to return the first element.
 So, for example, we may want to do something like that:
-```
+```c++
 auto transforms = entity.query<Transform>();
 if(transforms)
     auto t = *transforms; // do something with 't', the entity transform
@@ -74,7 +74,7 @@ By now, *Wildcat* supports only mouse and raw keyboard inputs. More effort will 
 ##### Drawables
 These components are the ones that allow you to make something on the screen. There is a **Text** component that supports only TTFs for now, good old **Sprite**s to draw images, and **Crowd**s. These are collection of **[Sprite**, **Transform]** pairs (called **Spectator**s) useful for composing elements from multiple images.
 ### Pixel manipulators
-Some of the drawable elements can be accessed on a per-pixel base to modify the way they look. **Pixel manipulator**s works similarly as shaders, with the important exception that they process images via CPU rather than GPU. This is the core concept of the software-side renderer of the engine. Their main advantages are:
+Some of the drawable elements can be accessed on a per-pixel basis to modify the way they look. **Pixel manipulator**s works similarly as shaders, with the important exception that they process images via CPU rather than GPU. This is the core concept of the software-side renderer of the engine. Their main advantages are:
 * Portability and efficiency, as they are written in C++ and compiled native
 * No bandwidth problems, as they not work through I/O
 * Highly expressive, as no restrictions apply to the possible computations
