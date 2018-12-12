@@ -4,7 +4,8 @@
 #include "ecs/Drawable.h"
 #include "graphics/SmartSurface.h"
 
-namespace wkt::components
+namespace wkt {
+namespace components
 {
 
 class SurfacePainter : public wkt::ecs::Drawable
@@ -30,6 +31,6 @@ private:
 
 REGISTER_DRAWABLE(SurfacePainter, -15);
 
-}
+}}
 
 #endif

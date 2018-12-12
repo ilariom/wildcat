@@ -37,7 +37,7 @@ inline void BB<sz_src, pos_src, S>::update()
         this->size = this->szcomp->size();
 }
 
-struct FakePosSrc { wkt::math::vec2& getPosition() { } };
+struct FakePosSrc { wkt::math::vec2 zero; wkt::math::vec2& getPosition() { return zero; } };
 
 template<typename sz_src, typename pos_src = FakePosSrc>
 std::shared_ptr<BoundingBox> makeBoundingBox(std::shared_ptr<sz_src> szcomp = nullptr, std::shared_ptr<pos_src> poscomp = nullptr)

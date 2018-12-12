@@ -1,6 +1,7 @@
 #include "SurfaceStream.h"
 
-namespace wkt::gph
+namespace wkt {
+namespace gph
 {
 
 SurfaceStream& SurfaceStream::operator<<(const wkt::gph::SmartSurface& ss)
@@ -28,4 +29,4 @@ wkt::gph::SmartSurface& SurfaceStream::sync()
     return this->target;
 }
 
-}
+}}

@@ -5,7 +5,8 @@
 #include "math/wktmath.h"
 #include <vector>
 
-namespace wkt::gph
+namespace wkt {
+namespace gph
 {
 
 class SurfaceStream final
@@ -28,11 +29,11 @@ public:
     const wkt::gph::SmartSurface& read() const { return this->target; }
 
 private:
-    wkt::gph::SmartSurface target;
-    std::vector<std::pair<const wkt::gph::SmartSurface*, size_t>> surfaces;
+    SmartSurface target;
+    std::vector<std::pair<const SmartSurface*, size_t>> surfaces;
     std::vector<wkt::math::vec2> positions;
 };
 
-}
+}}
 
 #endif

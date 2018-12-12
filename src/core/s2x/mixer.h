@@ -169,6 +169,7 @@ inline int Mixer::bindChannel(const std::string& filePath, int channel)
     }
 
     this->boundChannels[channel] = this->fxs[filePath].first;
+    return channel;
 }
 
 inline void Mixer::playChannel(int channel, int loops, int fadeIn, int timeout)
