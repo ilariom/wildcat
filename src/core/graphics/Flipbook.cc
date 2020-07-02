@@ -38,18 +38,18 @@ const wkt::math::Rect& Flipbook::flipbook_iterator::operator*() const
 
 Flipbook::flipbook_iterator& Flipbook::flipbook_iterator::operator++()
 {
-    if (this->idx >= fb.size())
+    if (this->idx >= this->fb.size())
         return *this;
     
-    if (this->card.times == 0 && this->idx + 1 < fb.size())
+    if (this->card.times == 1 && this->idx + 1 < this->fb.size())
     {
         this->idx++;
-        this->card = fb.cards[this->idx];
+        this->card = this->fb.cards[this->idx];
     }
-    else
-    {
+    else if (this->card.times > 0)
         this->card.times--;
-    }
+    else
+        this->idx = this->fb.size();
 
     return *this;
 }
@@ -86,7 +86,5 @@ bool FlipbookChannels::hasNext() const
 {
     return this->loop || *this->it != this->channels[this->currentChannel].end();
 }
-
-
 
 }}

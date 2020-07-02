@@ -29,7 +29,7 @@ public:
         const wkt::math::Rect& operator*() const;
         flipbook_iterator& operator++();
 
-        bool operator==(const flipbook_iterator& o) const { return this->idx == o.idx && this->card.times == o.card.times; }
+        bool operator==(const flipbook_iterator& o) const { return this->idx == o.idx; }
         bool operator!=(const flipbook_iterator& o) const { return !(*this == o); }
 
     private:
