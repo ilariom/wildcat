@@ -1,7 +1,7 @@
 #ifndef _S2X_EVENTS_H
 #define _S2X_EVENTS_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <unordered_map>
 #include <functional>
 #include <vector>

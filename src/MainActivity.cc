@@ -1,27 +1,27 @@
 #include "MainActivity.h"
-#include "core/s2x/basics.h"
-#include "core/globals/Scene.h"
-#include "core/globals/SceneGraph.h"
-#include "core/ecs/Entity.h"
-#include "core/components/Node.h"
-#include "core/components/Sprite.h"
-#include "core/components/Transform.h"
-#include "core/components/Script.h"
-#include "core/components/KeyboardEventReceiver.h"
-#include "core/systems/KeyboardReceiverSystem.h"
-#include "core/systems/ScriptSystem.h"
-#include "core/systems/MessageSystem.h"
-#include "core/components/Dictionary.h"
-#include "core/components/Table.h"
-#include "core/components/MouseReceiver.h"
-#include "core/systems/MouseReceiverSystem.h"
-#include "core/components/ActionReceiver.h"
-#include "core/systems/ActionReceiverSystem.h"
-#include "core/input/InputManager.h"
-#include "core/pixmanip/pixmanip.h"
-#include "core/components/JSON.h"
-#include "core/components/Crowd.h"
-#include "core/components/Text.h"
+#include <s2x/basics.h>
+#include <globals/Scene.h>
+#include <globals/SceneGraph.h>
+#include <ecs/Entity.h>
+#include <components/Node.h>
+#include <components/Sprite.h>
+#include <components/Transform.h>
+#include <components/Script.h>
+#include <components/KeyboardEventReceiver.h>
+#include <systems/KeyboardReceiverSystem.h>
+#include <systems/ScriptSystem.h>
+#include <systems/MessageSystem.h>
+#include <components/Dictionary.h>
+#include <components/Table.h>
+#include <components/MouseReceiver.h>
+#include <systems/MouseReceiverSystem.h>
+#include <components/ActionReceiver.h>
+#include <systems/ActionReceiverSystem.h>
+#include <input/InputManager.h>
+#include <pixmanip/pixmanip.h>
+#include <components/JSON.h>
+#include <components/Crowd.h>
+#include <components/Text.h>
 #include <memory>
 
 using namespace wkt::components;
@@ -88,7 +88,7 @@ void MainActivity::onStart()
     entity += node;
     entity += mt;
     entity += std::make_shared<JSON>();
-    auto s = std::make_shared<Sprite>("urban.jpg");
+    auto s = std::make_shared<Sprite>("ninja.png");
     entity += s;
     float sc = 640.f / s->size().width;
     mt->setScale(sc);
@@ -100,21 +100,18 @@ void MainActivity::onStart()
     auto ninjas = std::make_shared<Sprite>("ninja.png");
     node->appendChild(ninjan);
     // ninjat->setScale(1.f / sc);
+    ninjat->setScale(.5f);
     ninjat->setPosition({320.f / sc, 0});
     ninja += ninjan;
     ninja += ninjat;
     ninja += ninjas;
-    ninja += std::make_shared<Mover>();
+    // ninja += std::make_shared<Mover>();
 
-    auto& txten = scene->getDefaultSceneGraph().entityManager().make();
-    auto txtent = std::make_shared<Transform>();
-    auto txtenn = std::make_shared<Node>();
-    node->appendChild(txtenn);
-    auto text = std::make_shared<Text>("../res/FiraCode-Bold.ttf", 32);
-    text->write("Hello world!");
-    txten += txtent;
-    txten += txtenn;
-    txten += text;
+    // auto& txten = scene->getDefaultSceneGraph().entityManager().make();
+    // auto txtent = std::make_shared<Transform>();
+    // auto txtenn = std::make_shared<Node>();
+    // node->appendChild(txtenn);
+    
 
     // auto t1 = std::make_shared<Transform>();
     // auto t2 = std::make_shared<Transform>();

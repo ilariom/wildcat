@@ -1,4 +1,4 @@
-#include "core/main_loop.h"
+#include "main_loop.h"
 
 int main()
 {

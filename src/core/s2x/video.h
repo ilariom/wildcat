@@ -2,8 +2,8 @@
 #define _S2X_VIDEO_H
 
 #include "s2x_types.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <string>
 #include <ostream>
 #include <algorithm>

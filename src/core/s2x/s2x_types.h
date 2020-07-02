@@ -1,7 +1,7 @@
 #ifndef S2X_TYPES_H
 #define S2X_TYPES_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <memory>
 
 namespace s2x

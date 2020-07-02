@@ -1,8 +1,8 @@
 #ifndef S2X_TTF_H
 #define S2X_TTF_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include "s2x/video.h"
 #include <string>
 

@@ -1,8 +1,8 @@
 #ifndef _WKT_RENDER_SYSTEM_H
 #define _WKT_RENDER_SYSTEM_H
 
-#include "core/ecs/System.h"
-#include "core/components/Node.h"
+#include "ecs/System.h"
+#include "components/Node.h"
 #include "graphics/Director.h"
 
 namespace wkt {

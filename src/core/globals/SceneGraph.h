@@ -3,7 +3,7 @@
 
 #include "managers/ECSContext.h"
 #include "components/Node.h"
-#include "core/graphics/SurfaceCache.h"
+#include "graphics/SurfaceCache.h"
 #include "graphics/Camera.h"
 #include "graphics/Director.h"
 #include "systems/RenderSystem.h"

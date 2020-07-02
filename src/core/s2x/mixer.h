@@ -1,8 +1,8 @@
 #ifndef S2X_MIXER_H
 #define S2X_MIXER_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 #include <unordered_map>
 #include <string>
 #include <cassert>

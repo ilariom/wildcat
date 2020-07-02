@@ -1,9 +1,9 @@
 #ifndef _S2X_BASICS_H
 #define _S2X_BASICS_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <string>
 
 namespace s2x
