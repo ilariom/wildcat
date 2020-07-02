@@ -8,6 +8,7 @@
 #include "graphics/Director.h"
 #include "systems/RenderSystem.h"
 #include "systems/TransformUpdateSystem.h"
+#include "config.h"
 #include <memory>
 
 namespace wkt {
@@ -49,8 +50,13 @@ private:
 
 inline SceneGraph::SceneGraph()
 { 
-    this->cam.setSize({640.f, 480.f});
+    // this->cam.setSize({640.f, 480.f});
     // this->cam.setPosition({300.f, 0.f});
+    this->cam.setSize({
+        static_cast<float>(getStartupConfig().windowWidth),
+        static_cast<float>(getStartupConfig().windowHeight)
+    });
+
     this->renderSystem = std::make_unique<wkt::systems::RenderSystem>();
     auto& sm = systemsManager();
     sm += std::make_unique<wkt::systems::TransformUpdateSystem>();

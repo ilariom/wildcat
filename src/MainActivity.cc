@@ -105,6 +105,7 @@ void MainActivity::onStart()
     ninja += ninjan;
     ninja += ninjat;
     ninja += ninjas;
+
     // ninja += std::make_shared<Mover>();
 
     // auto& txten = scene->getDefaultSceneGraph().entityManager().make();

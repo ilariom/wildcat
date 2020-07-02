@@ -28,7 +28,7 @@ constexpr int MOUSE_PROXY_TAG = -3;
 
 void mainLoop()
 {
-    StartupConfig conf;
+    StartupConfig& conf = getStartupConfig();
     MainActivity mainActivity;
     mainActivity.onCreate(conf);
 

@@ -33,6 +33,8 @@ public:
     void unscheduleUpdate() { this->updateScheduled = false; }
     bool isUpdateScheduled() const { return this->updateScheduled; }
 
+    bool unique() const override { return false; }
+
 public:
     const time_point& getLastTimePoint() const { return this->lastTimePoint; }
     void setLastTimePoint(time_point tp) { this->lastTimePoint = std::move(tp); }

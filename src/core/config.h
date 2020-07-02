@@ -17,6 +17,8 @@ struct StartupConfig
     unsigned int fps;
 };
 
+StartupConfig& getStartupConfig();
+
 }
 
 #endif
