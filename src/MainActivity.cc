@@ -22,7 +22,11 @@
 #include <components/JSON.h>
 #include <components/Crowd.h>
 #include <components/Text.h>
+#include <graphics/Flipbook.h>
+#include <graphics/Atlas.h>
+#include <components/ScriptInterface.h>
 #include <memory>
+#include <iostream>
 
 using namespace wkt::components;
 using namespace wkt::events;
@@ -46,14 +50,49 @@ public:
                 sprite->shade(wkt::pixmanip::darken(.9f));
         };
 
+        Atlas atlas;
+        Atlas::Card card;
+
+        Atlas::atlas_iterator it = atlas.end();
+
+        wkt::math::Rect r;
+        r.origin.x = 0;
+        r.origin.y = 0;
+        r.size.width = 20;
+        r.size.height = 20;
+
+        wkt::math::Rect s;
+        s.origin.x = 30;
+        r.origin.y = 0;
+        r.size.width = 200;
+        r.size.height = 200;
+
+        this->fc.addChannel(Flipbook {
+            {
+                { r, 100 },
+                { s, 30 }
+            }
+        });
+
+        this->fc.setChannel(0);
+
         entity += mouseRecv;
+
+        scheduleUpdate();
     }
 
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
     void update(duration dt) override
     {
-       
+        if (fc.hasNext())
+        {
+            auto ninja = *getEntity()->query<Sprite>();
+            ninja->crop(fc.next().rect);
+        }
     }
+
+private:
+    FlipbookChannels fc;
 };
 
 namespace wkt {
@@ -106,7 +145,7 @@ void MainActivity::onStart()
     ninja += ninjat;
     ninja += ninjas;
 
-    // ninja += std::make_shared<Mover>();
+    ninja += std::make_shared<Mover>();
 
     // auto& txten = scene->getDefaultSceneGraph().entityManager().make();
     // auto txtent = std::make_shared<Transform>();

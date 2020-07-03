@@ -1,4 +1,5 @@
 #include "Flipbook.h"
+#include <algorithm>
 
 namespace wkt {
 namespace gph
@@ -24,16 +25,32 @@ void Flipbook::pop()
     this->cards.pop_back();
 }
 
+Flipbook::Card& Flipbook::operator[](const std::string& name)
+{
+    return *const_cast<Flipbook::Card*>(
+        &((*this)[name])
+    );
+}
+
+const Flipbook::Card& Flipbook::operator[](const std::string& name) const
+{
+    auto it = std::find_if(this->cards.begin(), this->cards.end(), [&name] (const Card& card) {
+        return card.name == name;
+    });
+
+    return *it;
+}
+
 Flipbook::flipbook_iterator::flipbook_iterator(const Flipbook& fb, size_t idx)
     : fb(fb), idx(idx)
 {
     if (fb.size() > idx)
-        card = fb.cards[idx];
+        this->times = fb.cards[idx].times;
 }
 
-const wkt::math::Rect& Flipbook::flipbook_iterator::operator*() const
+const Flipbook::Card& Flipbook::flipbook_iterator::operator*() const
 {
-    return this->card.rect;
+    return this->fb.cards[this->idx];
 }
 
 Flipbook::flipbook_iterator& Flipbook::flipbook_iterator::operator++()
@@ -41,13 +58,13 @@ Flipbook::flipbook_iterator& Flipbook::flipbook_iterator::operator++()
     if (this->idx >= this->fb.size())
         return *this;
     
-    if (this->card.times == 1 && this->idx + 1 < this->fb.size())
+    if (this->times == 1 && this->idx + 1 < this->fb.size())
     {
         this->idx++;
-        this->card = this->fb.cards[this->idx];
+        this->times = this->fb.cards[this->idx].times;
     }
-    else if (this->card.times > 0)
-        this->card.times--;
+    else if (this->times > 0)
+        this->times--;
     else
         this->idx = this->fb.size();
 
@@ -70,14 +87,14 @@ void FlipbookChannels::setChannel(size_t channel, bool loop)
     this->loop = loop;
 }
 
-wkt::math::Rect FlipbookChannels::next()
+const Flipbook::Card& FlipbookChannels::next()
 {
     if (this->loop && *this->it == this->channels[this->currentChannel].end())
     {
         setChannel(this->currentChannel, this->loop);
     }
 
-    wkt::math::Rect r = **this->it;
+    const Flipbook::Card& r = **this->it;
     ++*this->it;
     return r;
 }

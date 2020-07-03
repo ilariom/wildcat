@@ -2,6 +2,7 @@
 #define WKT_FLIPBOOK_H
 
 #include "math/wktmath.h"
+#include <string>
 #include <vector>
 #include <memory>
 #include <cstdint>
@@ -15,6 +16,21 @@ class Flipbook
 public:
     struct Card
     {
+        Card() = default;
+
+        Card(std::string name, wkt::math::Rect rect, uint16_t times)
+            : name(name), rect(rect), times(times)
+        { }
+
+        Card(wkt::math::Rect rect, uint16_t times)
+            : rect(rect), times(times)
+        { }
+
+        Card(wkt::math::Rect rect)
+            : rect(rect), times(1)
+        { }
+
+        std::string name;
         wkt::math::Rect rect;
         uint16_t times;
     };
@@ -26,7 +42,7 @@ public:
         flipbook_iterator(flipbook_iterator&&) = default;
 
     public:
-        const wkt::math::Rect& operator*() const;
+        const Card& operator*() const;
         flipbook_iterator& operator++();
 
         bool operator==(const flipbook_iterator& o) const { return this->idx == o.idx; }
@@ -34,7 +50,7 @@ public:
 
     private:
         const Flipbook& fb;
-        Card card;
+        size_t times;
         size_t idx;
     };
 
@@ -51,6 +67,9 @@ public:
     void pop();
     size_t size() const { return this->cards.size(); }
 
+    Card& operator[](const std::string& name);
+    const Card& operator[](const std::string& name) const;
+
     flipbook_iterator begin() const { return flipbook_iterator { *this, 0 }; }
     flipbook_iterator end() const { return flipbook_iterator { *this, size() }; }
 
@@ -64,7 +83,7 @@ public:
     size_t addChannel(const Flipbook&);
     void setChannel(size_t, bool loop = false);
 
-    wkt::math::Rect next();
+    const Flipbook::Card& next();
     bool hasNext() const;
 
 private:

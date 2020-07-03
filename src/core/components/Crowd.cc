@@ -1,4 +1,5 @@
 #include "Crowd.h"
+#include <limits>
 
 namespace
 {
@@ -8,6 +9,8 @@ namespace
 namespace wkt {
 namespace components
 {
+
+const Crowd::SpectatorID Crowd::NULL_ID = std::numeric_limits<Crowd::SpectatorID>::max();
 
 Spectator makeSpectator(const std::string& filename, const Transform& t)
 {
@@ -19,43 +22,61 @@ Spectator makeSpectator(const Sprite& s, const Transform& t)
     return std::make_pair(s, t);
 }
 
-Sprite& sprite(const Spectator& s)
+Sprite& sprite(Spectator& s)
 {
-    return const_cast<Spectator&>(s).first;
+    return s.first;
 }
 
-Transform& transform(const Spectator& s)
+Transform& transform(Spectator& s)
 {
-    return const_cast<Spectator&>(s).second;
+    return s.second;
+}
+
+const Sprite& sprite(const Spectator& s)
+{
+    return s.first;
+}
+
+const Transform& transform(const Spectator& s)
+{
+    return s.second;
 }
 
 Crowd::SpectatorID Crowd::insert(const Spectator& s)
 {
     SpectatorID sid = uid++;
-    this->spectators.emplace(sid, s);
+    this->spectators.emplace_back(s);
+
     return sid;
 }
 
 Crowd::SpectatorID Crowd::emplace(const std::string& filename, const Transform& t)
 {
     SpectatorID sid = uid++;
-    this->spectators.emplace(sid, std::move(makeSpectator(filename, t)));
+
+    this->spectators.emplace_back(
+        makeSpectator(filename, t)
+    );
+
     return sid;
 }
 
 void Crowd::erase(SpectatorID id)
 {
-    this->spectators.erase(id);
+    this->spectators.erase(this->spectators.begin() + id);
 }
 
 void Crowd::draw(const wkt::gph::Director& d, const Transform& t)
 {
-    for(auto& p : this->spectators)
+    for (SpectatorID id = 0; id < this->spectators.size(); ++id)
     {
-        Spectator& sp = p.second;
+        Spectator& sp = this->spectators[id];
         Transform& localTransform = transform(sp);
         Sprite& localSprite = sprite(sp);
-        localTransform.setParentCoordinates(t.getWorldCoordinates());
+
+        if (flat() || id == root())
+            localTransform.setParentCoordinates(t.getWorldCoordinates());
+
         localSprite.draw(d, localTransform);
     }
 }
@@ -64,16 +85,16 @@ void Crowd::setOpacity(uint8_t opacity)
 {
     this->opacity = opacity;
 
-    for(auto& p : this->spectators)
-        sprite(p.second).setOpacity(opacity);
+    for (auto& p : this->spectators)
+        sprite(p).setOpacity(opacity);
 }
 
 void Crowd::setColor(const wkt::gph::Color& color)
 {
     this->color = color;
 
-    for(auto& p : this->spectators)
-        sprite(p.second).setColor(color);
+    for (auto& p : this->spectators)
+        sprite(p).setColor(color);
 }
 
 }}
