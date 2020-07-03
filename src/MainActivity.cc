@@ -25,6 +25,7 @@
 #include <graphics/Flipbook.h>
 #include <graphics/Atlas.h>
 #include <components/ScriptInterface.h>
+#include <utils/search_path.h>
 #include <memory>
 #include <iostream>
 
@@ -116,6 +117,8 @@ void MainActivity::onCreate(StartupConfig& conf)
     conf.hardwareAccelerated = true;
     conf.fps = 60;
     s2x::log("CREATE!");
+
+    wkt::path::add("../res");
 }
 
 void MainActivity::onStart()

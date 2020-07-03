@@ -1,6 +1,7 @@
 #include "SmartSurface.h"
 #include "SurfaceCache.h"
 #include "TextureCache.h"
+#include "utils/search_path.h"
 #include <cassert>
 
 namespace wkt {
@@ -9,7 +10,7 @@ namespace gph
 
 SmartSurface::SmartSurface(const std::string& filename, const wkt::math::Rect& crop)
 {
-    this->filename = "../res/" + filename;
+    this->filename = wkt::path::locate(filename);
     auto& surfaceCache = SurfaceCache::getInstance();
     this->commonSurface = surfaceCache[this->filename];
     this->activeSurface = this->commonSurface.get();
