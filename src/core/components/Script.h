@@ -41,14 +41,18 @@ public:
 
     std::vector<Message>& messages() { return this->msgs; }
 
+    const std::string& getName() const { return this->name; }
+    void setName(const std::string& name) { this->name = name; }
+
 protected:
     Message makeMessage() { return Message(getEntity()); }
     void sendMessage(Message msg) { this->msgs.push_back(std::move(msg)); }
 
 private:
+    std::vector<Message> msgs;
+    std::string name;
     time_point lastTimePoint = time_point(duration(0));
     bool updateScheduled = false;
-    std::vector<Message> msgs;
 };
 
 REGISTER_COMPONENT(Script, -4);

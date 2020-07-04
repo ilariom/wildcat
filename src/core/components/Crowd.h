@@ -31,6 +31,7 @@ public:
     SpectatorID insert(const Spectator& s);
     SpectatorID emplace(const std::string& filename, const Transform& t);
     void erase(SpectatorID id);
+    size_t size() const { return this->spectators.size(); }
 
     void draw(const wkt::gph::Director&, const Transform&) override;
 
@@ -44,6 +45,9 @@ public:
 
     void setRoot(SpectatorID id) { this->rootId = id; }
     SpectatorID root() const { return this->rootId; }
+
+    Spectator& operator[](SpectatorID id) { return this->spectators[id]; }
+    const Spectator& operator[](SpectatorID id) const { return this->spectators[id]; }
     
 private:
     std::vector<Spectator> spectators;

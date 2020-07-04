@@ -64,6 +64,8 @@ public:
     Coords getWorldCoordinates() const;
     const Coords& getCoordinates() const { return this->local; }
 
+    void setCoords(const Coords& local) { this->local = local; }
+
 private:
     Coords local;
     Coords parent;

@@ -26,6 +26,7 @@
 #include <graphics/Atlas.h>
 #include <components/ScriptInterface.h>
 #include <utils/search_path.h>
+#include <scripts/Animator.h>
 #include <memory>
 #include <iostream>
 
@@ -56,26 +57,28 @@ public:
 
         Atlas::atlas_iterator it = atlas.end();
 
-        wkt::math::Rect r;
-        r.origin.x = 0;
-        r.origin.y = 0;
-        r.size.width = 20;
-        r.size.height = 20;
+        // auto anim = *getEntity()->query<scripts::FlipbookAnimator>();
+        // anim->start();
+        // wkt::math::Rect r;
+        // r.origin.x = 0;
+        // r.origin.y = 0;
+        // r.size.width = 20;
+        // r.size.height = 20;
 
-        wkt::math::Rect s;
-        s.origin.x = 30;
-        r.origin.y = 0;
-        r.size.width = 200;
-        r.size.height = 200;
+        // wkt::math::Rect s;
+        // s.origin.x = 30;
+        // r.origin.y = 0;
+        // r.size.width = 200;
+        // r.size.height = 200;
 
-        this->fc.addChannel(Flipbook {
-            {
-                { r, 100 },
-                { s, 30 }
-            }
-        });
+        // this->fc.addChannel(Flipbook {
+        //     {
+        //         { r, 100 },
+        //         { s, 30 }
+        //     }
+        // });
 
-        this->fc.setChannel(0);
+        // this->fc.setChannel(0);
 
         entity += mouseRecv;
 
@@ -85,11 +88,11 @@ public:
     void onMessage(const std::string& msg, const wkt::ecs::Entity& sender) override { s2x::log(msg); }
     void update(duration dt) override
     {
-        if (fc.hasNext())
-        {
-            auto ninja = *getEntity()->query<Sprite>();
-            ninja->crop(fc.next().rect);
-        }
+        // if (fc.hasNext())
+        // {
+        //     auto ninja = *getEntity()->query<Sprite>();
+        //     ninja->crop(fc.next().rect);
+        // }
     }
 
 private:
@@ -150,6 +153,53 @@ void MainActivity::onStart()
 
     ninja += std::make_shared<Mover>();
 
+    wkt::math::Rect r;
+    r.origin.x = 0;
+    r.origin.y = 0;
+    r.size.width = 20;
+    r.size.height = 20;
+
+    wkt::math::Rect r2;
+    r2.origin.x = 30;
+    r2.origin.y = 0;
+    r2.size.width = 200;
+    r2.size.height = 200;
+
+    FlipbookChannels fc;
+
+    fc.addChannel(Flipbook {
+        {
+            { r, 100 },
+            { r2, 30 }
+        }
+    });
+
+    auto anim = std::make_shared<scripts::FlipbookAnimator>(
+        *ninjas,
+        std::move(fc)
+    );
+
+    // ninja += anim;
+
+    anim->getFlipbookChannels().setChannel(0, true);
+    // anim->start();
+
+    auto kan = std::make_shared<scripts::Animator>(
+        *ninjat,
+        true
+    );
+
+    Coords A;
+    A.position = { 320.f / sc, 0 };
+    kan->getKeyframes().emplace_back(
+        8,
+        A
+    );
+
+    ninja += kan;
+    kan->start();
+
+    std::cout << ninja.query<Script>().size() << std::endl;
     // auto& txten = scene->getDefaultSceneGraph().entityManager().make();
     // auto txtent = std::make_shared<Transform>();
     // auto txtenn = std::make_shared<Node>();
