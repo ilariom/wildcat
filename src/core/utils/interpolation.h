@@ -21,7 +21,7 @@ public:
     { }
 
 public:
-    inline float update(float dt);
+    inline float update();
     bool hasEnded() const { return this->t >= this->delay + this->duration; }
 
     float getDelay() const { return this->delay; }
@@ -30,13 +30,16 @@ public:
     float getEnd() const { return this->end; }
     float getTimeElapsed() const { return this->t; }
 
+    void setResolution(float resolution) { this->resolution = resolution; }
+    float getResoltion() const { return this->resolution; }
+
 private:
     float start, end, duration, delay;
     float t = 0;
     float resolution = .016667f;
 };
 
-inline float Interpolator::update(float dt)
+inline float Interpolator::update()
 {
     if (this->t < this->delay)
     {
@@ -45,7 +48,7 @@ inline float Interpolator::update(float dt)
 
     this->t += this->resolution;
 
-    return this->start + this->t * (this->end - this->start) / (this->delay + this->duration);
+    return this->start + (this->t - this->delay) * (this->end - this->start) / this->duration;
 }
 
 }

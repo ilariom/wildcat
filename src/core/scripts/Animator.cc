@@ -35,7 +35,7 @@ bool Animator::setupNext()
     return true;
 }
 
-void Animator::update(duration dt)
+void Animator::update(duration)
 {
     if (this->interpolators[0].hasEnded() && !setupNext())
     {
@@ -43,16 +43,15 @@ void Animator::update(duration dt)
         return;
     }
 
-    float delta = dt.count() / 1000.f;
     wkt::components::Coords nextCoords;
 
-    nextCoords.position.x = this->interpolators[0].update(delta);
-    nextCoords.position.y = this->interpolators[1].update(delta);
-    nextCoords.rotationAnchor.x = this->interpolators[2].update(delta);
-    nextCoords.rotationAnchor.y = this->interpolators[3].update(delta);
-    nextCoords.rotation = this->interpolators[4].update(delta);
-    nextCoords.scaleX = this->interpolators[5].update(delta);
-    nextCoords.scaleY = this->interpolators[6].update(delta);
+    nextCoords.position.x = this->interpolators[0].update();
+    nextCoords.position.y = this->interpolators[1].update();
+    nextCoords.rotationAnchor.x = this->interpolators[2].update();
+    nextCoords.rotationAnchor.y = this->interpolators[3].update();
+    nextCoords.rotation = this->interpolators[4].update();
+    nextCoords.scaleX = this->interpolators[5].update();
+    nextCoords.scaleY = this->interpolators[6].update();
 
     this->transform.setCoords(nextCoords);
 }

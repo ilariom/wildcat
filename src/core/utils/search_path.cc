@@ -25,12 +25,12 @@ std::string locate(const std::string& filename)
     {
         for (const std::string& basepath : searchPaths)
         {
-            std::string fullPath = basepath + "/" + filename;
+            std::string fullpath = basepath + "/" + filename;
 
-            if (FILE* f = fopen(fullPath.c_str(), "r"))
+            if (FILE* f = fopen(fullpath.c_str(), "r"))
             {
                 fclose(f);
-                paths[filename] = fullPath;
+                paths[filename] = fullpath;
                 break;
             }
         }
