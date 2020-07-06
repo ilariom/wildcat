@@ -17,7 +17,7 @@ public:
     Window(const std::string& title, int x, int y, int width, int height)
         : title_(title)
     {
-        this->win = SDL_CreateWindow(title.c_str(), x, y, width, height, 0);    
+        this->win = SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_ALLOW_HIGHDPI);    
     }
 
     ~Window() { SDL_DestroyWindow(this->win); }
@@ -239,54 +239,86 @@ inline void Surface::blit(const Rect& r, const Surface& srf, float scaleX, float
 class Renderer
 {
 public:
-    Renderer(const Window& window, int flags) { this->resource = SDL_CreateRenderer(window, -1, flags); }
+    Renderer(const Window& window, int flags) : window(window)
+    { 
+        this->resource = SDL_CreateRenderer(window, -1, flags); 
+        SDL_RenderSetLogicalSize(this->resource, window.size().width, window.size().height); 
+    }
+
     Renderer(const Renderer&) = delete;
-    Renderer(Renderer&& ren) { std::swap(this->resource, ren.resource); }
+    Renderer(Renderer&& ren) : window(ren.window) { std::swap(this->resource, ren.resource); }
     ~Renderer() { if(this->resource) SDL_DestroyRenderer(this->resource); }
 
     Renderer& operator=(const Renderer&) = delete;
     inline Renderer& operator=(Renderer&&);
 
 public:
+    inline Size size() const;
     void clear() { SDL_RenderClear(*this); }
     void present() { SDL_RenderPresent(*this); }
     void copy(SDL_Texture* tex) { SDL_RenderCopy(*this, tex, nullptr, nullptr); }
+    
     void copy(SDL_Texture* tex, const SDL_Rect& texSlice, const SDL_Rect& drawPos) 
-        { SDL_RenderCopy(*this, tex, &texSlice, &drawPos); }
+    { SDL_RenderCopy(*this, tex, &texSlice, &drawPos); }
+
     void copy(SDL_Texture* tex, int width, int height)
     {
         SDL_Rect r = { 0, 0, width, height };
         SDL_RenderCopy(*this, tex, nullptr, &r);
     }
+
     void copy(SDL_Texture* tex, 
-            const SDL_Rect& texSlice, 
-            const SDL_Rect& drawPos, 
-            const double angle, 
-            const SDL_Point& rotationAnchor,
-            const SDL_RendererFlip flip)
+        const SDL_Rect& texSlice, 
+        const SDL_Rect& drawPos, 
+        const double angle, 
+        const SDL_Point& rotationAnchor,
+        const SDL_RendererFlip flip = SDL_FLIP_NONE
+    )
     {
         SDL_RenderCopyEx(*this, tex, &texSlice, &drawPos, angle, &rotationAnchor, flip);
     }
 
-    void copy(SDL_Texture* tex,
-            const SDL_Rect& drawPos,
-            const double angle,
-            const SDL_Point& rotationAnchor,
-            float scaleX,
-            float scaleY,
-            const SDL_Rect& texRect = {},
-            SDL_RendererFlip flip = SDL_FLIP_NONE)
+    void copy(SDL_Texture* tex, 
+        const SDL_Rect& drawPos, 
+        const double angle, 
+        const SDL_Point& rotationAnchor,
+        const SDL_RendererFlip flip = SDL_FLIP_NONE
+    )
     {
-        SDL_RenderSetScale(*this, scaleX, scaleY);
+        SDL_RenderCopyEx(*this, tex, NULL, &drawPos, angle, &rotationAnchor, flip);
+    }
+
+    void copy(SDL_Texture* tex,
+        const SDL_Rect& drawPos,
+        const double angle,
+        const SDL_Point& rotationAnchor,
+        float scaleX,
+        float scaleY,
+        const SDL_Rect& texRect = {},
+        SDL_RendererFlip flip = SDL_FLIP_NONE
+    )
+    {
+        SDL_RenderSetScale(*this, scaleX * devicePixelRatio(), scaleY * devicePixelRatio());
         SDL_RenderCopyEx(*this, tex, texRect.w > 0 && texRect.h > 0 ? &texRect : NULL, &drawPos, angle, &rotationAnchor, flip);
-        SDL_RenderSetScale(*this, 1, 1);
+        SDL_RenderSetScale(*this, devicePixelRatio(), devicePixelRatio());
     }
 
     operator SDL_Renderer*() const { return this->resource; }
 
+    const Window& getWindow() const { return this->window; }
+    float devicePixelRatio() const { return size().width / getWindow().size().width; }
+
 private:
     SDL_Renderer* resource = nullptr;
+    const Window& window;
 };
+
+inline Size Renderer::size() const
+{
+    int w, h;
+    SDL_GetRendererOutputSize(this->resource, &w, &h);
+    return { w, h };
+}
 
 inline Renderer& Renderer::operator=(Renderer&& ren)
 {

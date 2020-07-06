@@ -12,31 +12,34 @@ void Director::shot(SmartSurface& ss, const wkt::components::Transform& transfor
     auto scoords = this->camera->getScreenCoordinates(transform).getCoordinates();
     auto sz = ss.size();
 
-    SDL_Rect r = { 
-        (int)(scoords.position.x / wcoords.scaleX), 
-        (int)(scoords.position.y / wcoords.scaleY), 
-        (int)(sz.width), 
-        (int)(sz.height)
-    };
-
     auto cameraBB = this->camera->getBoundingBox();
+
     wkt::math::Rect objBB = {
         scoords.position,
         sz
     };
 
-    if(cameraBB.intersect(objBB))
-    {
-        auto &texture = ss.getTexture();
-        auto texRect = ss.getTextureRect();
+    if (!cameraBB.intersect(objBB))
+        return;
 
-        SDL_Point ra = { 
-            (int)(scoords.rotationAnchor.x * sz.width), 
-            (int)(scoords.rotationAnchor.y * sz.height)
-        };
+    SDL_Rect r {
+        (int) scoords.position.x,
+        (int) scoords.position.y,
+        (int) (sz.width * wcoords.scaleX),
+        (int) (sz.height * wcoords.scaleY)
+    };
 
-        this->ren.copy(texture, r, scoords.rotation, ra, wcoords.scaleX, wcoords.scaleY, texRect);
-    }
+    SDL_Point ra = { 
+        (int) (scoords.rotationAnchor.x * r.w), 
+        (int) (scoords.rotationAnchor.y * r.h)
+    };
+
+    const auto& texRect = ss.getTextureRect();
+
+    if (texRect.size.width > 0 && texRect.size.height > 0)
+        this->ren.copy(ss.getTexture(), texRect, r, scoords.rotation, ra);
+    else
+        this->ren.copy(ss.getTexture(), r, scoords.rotation, ra);
 }
 
 }}

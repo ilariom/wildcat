@@ -132,11 +132,21 @@ void MainActivity::onStart()
     auto mt = std::make_shared<Transform>();
     entity += node;
     entity += mt;
-    entity += std::make_shared<JSON>();
+    // entity += std::make_shared<JSON>();
     auto s = std::make_shared<Sprite>("ninja.png");
     entity += s;
-    float sc = 640.f / s->size().width;
-    mt->setScale(sc);
+
+    // mt->setScale(.5f);
+    // mt->setRotation(45);
+    // mt->setRotationAnchor({
+    //     .5f, .5f
+    // });
+
+    mt->setPosition({
+        0, 0
+    });
+    // float sc = 640.f / s->size().width;
+    // mt->setScale(sc);
     scene->getDefaultSceneGraph().setRoot(node);
 
     auto& ninja = scene->getDefaultSceneGraph().entityManager().make();
@@ -144,64 +154,79 @@ void MainActivity::onStart()
     auto ninjan = std::make_shared<Node>();
     auto ninjas = std::make_shared<Sprite>("ninja.png");
     node->appendChild(ninjan);
-    // ninjat->setScale(1.f / sc);
-    ninjat->setScale(.5f);
-    ninjat->setPosition({320.f / sc, 0});
+    // // ninjat->setScale(1.f / sc);
+    // ninjat->setScale(.5f);
+    // ninjat->setPosition({320.f / sc, 0});
     ninja += ninjan;
     ninja += ninjat;
     ninja += ninjas;
 
-    ninja += std::make_shared<Mover>();
-
-    wkt::math::Rect r;
-    r.origin.x = 0;
-    r.origin.y = 0;
-    r.size.width = 20;
-    r.size.height = 20;
-
-    wkt::math::Rect r2;
-    r2.origin.x = 30;
-    r2.origin.y = 0;
-    r2.size.width = 200;
-    r2.size.height = 200;
-
-    FlipbookChannels fc;
-
-    fc.addChannel(Flipbook {
-        {
-            { r, 100 },
-            { r2, 30 }
-        }
+    ninjat->setScale(.5f);
+    ninjat->setPosition({
+        100,
+        480 - ninjat->getScale() * ninjas->size().height
     });
 
-    auto anim = std::make_shared<scripts::FlipbookAnimator>(
-        *ninjas,
-        std::move(fc)
-    );
+    ninjat->setRotationAnchor({
+        .5f, .5f
+    });
 
-    // ninja += anim;
+    ninjat->setRotation(90);
 
-    anim->getFlipbookChannels().setChannel(0, true);
-    // anim->start();
+    scene->getDefaultSceneGraph().camera().setRotation(-20);
+    scene->getDefaultSceneGraph().camera().setPosition({ 50, 0 });
 
-    auto kan = std::make_shared<scripts::Animator>(
-        *ninjat,
-        true
-    );
+    // ninja += std::make_shared<Mover>();
 
-    Coords A;
-    A.position = { 500.f / sc, 0 };
-    A.scaleX = A.scaleY = .5f;
+    // wkt::math::Rect r;
+    // r.origin.x = 0;
+    // r.origin.y = 0;
+    // r.size.width = 20;
+    // r.size.height = 20;
 
-    kan->getKeyframes().emplace_back(
-        8,
-        A
-    );
+    // wkt::math::Rect r2;
+    // r2.origin.x = 30;
+    // r2.origin.y = 0;
+    // r2.size.width = 200;
+    // r2.size.height = 200;
 
-    ninja += kan;
-    kan->start();
+    // FlipbookChannels fc;
 
-    std::cout << ninja.query<Script>().size() << std::endl;
+    // fc.addChannel(Flipbook {
+    //     {
+    //         { r, 100 },
+    //         { r2, 30 }
+    //     }
+    // });
+
+    // auto anim = std::make_shared<scripts::FlipbookAnimator>(
+    //     *ninjas,
+    //     std::move(fc)
+    // );
+
+    // // ninja += anim;
+
+    // anim->getFlipbookChannels().setChannel(0, true);
+    // // anim->start();
+
+    // auto kan = std::make_shared<scripts::Animator>(
+    //     *ninjat,
+    //     true
+    // );
+
+    // Coords A;
+    // A.position = { 500.f / sc, 0 };
+    // A.scaleX = A.scaleY = .5f;
+
+    // kan->getKeyframes().emplace_back(
+    //     8,
+    //     A
+    // );
+
+    // ninja += kan;
+    // kan->start();
+
+    // std::cout << ninja.query<Script>().size() << std::endl;
     // auto& txten = scene->getDefaultSceneGraph().entityManager().make();
     // auto txtent = std::make_shared<Transform>();
     // auto txtenn = std::make_shared<Node>();

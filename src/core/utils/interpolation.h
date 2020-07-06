@@ -31,7 +31,7 @@ public:
     float getTimeElapsed() const { return this->t; }
 
     void setResolution(float resolution) { this->resolution = resolution; }
-    float getResoltion() const { return this->resolution; }
+    float getResolution() const { return this->resolution; }
 
 private:
     float start, end, duration, delay;

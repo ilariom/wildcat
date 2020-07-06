@@ -14,9 +14,9 @@ Coords Transform::getWorldCoordinates() const
     float c = cosf(angle);
 
     float x = this->local.position.x;
-    float y = this->local.position.y;
-    o.position.x = this->local.position.x * c * this->parent.scaleX + this->local.position.y * s;
-    o.position.y = this->local.position.x * s + this->local.position.y * -c * this->parent.scaleY;
+    float y = -this->local.position.y;
+    o.position.x = x * c * this->parent.scaleX + y * s;
+    o.position.y = x * s + y * -c * this->parent.scaleY;
     o.position += this->parent.position;
     o.rotation = this->parent.rotation + this->local.rotation;
     o.rotationAnchor = this->local.rotationAnchor;
