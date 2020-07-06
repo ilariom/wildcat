@@ -52,7 +52,6 @@ class Animator : public AnimatorBase
     friend CrowdAnimator;
 
 public:
-    Animator() = default;
     Animator(wkt::components::Transform& transform, bool loop = false)
         : transform(transform), loop(loop) 
     { }

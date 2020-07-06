@@ -33,6 +33,7 @@ public:
 private:
     float start, end, duration, delay;
     float t = 0;
+    float resolution = .016667f;
 };
 
 inline float Interpolator::update(float dt)
@@ -42,7 +43,7 @@ inline float Interpolator::update(float dt)
         return this->start;
     }
 
-    this->t += dt;
+    this->t += this->resolution;
 
     return this->start + this->t * (this->end - this->start) / (this->delay + this->duration);
 }

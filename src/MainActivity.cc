@@ -190,7 +190,9 @@ void MainActivity::onStart()
     );
 
     Coords A;
-    A.position = { 320.f / sc, 0 };
+    A.position = { 500.f / sc, 0 };
+    A.scaleX = A.scaleY = .5f;
+
     kan->getKeyframes().emplace_back(
         8,
         A

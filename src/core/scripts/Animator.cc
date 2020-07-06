@@ -43,7 +43,7 @@ void Animator::update(duration dt)
         return;
     }
 
-    float delta = dt.count();
+    float delta = dt.count() / 1000.f;
     wkt::components::Coords nextCoords;
 
     nextCoords.position.x = this->interpolators[0].update(delta);
