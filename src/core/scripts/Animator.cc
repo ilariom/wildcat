@@ -21,8 +21,8 @@ bool Animator::setupNext()
     
     auto& next = this->keyframes[this->k++];
     const auto& coords = this->transform.getCoordinates();
-    const auto& nextCoords = next.second;
-    float duration = next.first;
+    const auto& nextCoords = next.sample;
+    float duration = next.duration;
 
     this->interpolators[0] = wkt::Interpolator(coords.position.x, nextCoords.position.x, duration);
     this->interpolators[1] = wkt::Interpolator(coords.position.y, nextCoords.position.y, duration);
@@ -32,6 +32,9 @@ bool Animator::setupNext()
     this->interpolators[5] = wkt::Interpolator(coords.scaleX, nextCoords.scaleX, duration);
     this->interpolators[6] = wkt::Interpolator(coords.scaleY, nextCoords.scaleY, duration);
 
+    if (!next.event.empty())
+        sendEvent(next.event);
+
     return true;
 }
 
@@ -39,7 +42,7 @@ void Animator::update(duration)
 {
     if (this->interpolators[0].hasEnded() && !setupNext())
     {
-        stop();
+        complete();
         return;
     }
 
@@ -56,12 +59,32 @@ void Animator::update(duration)
     this->transform.setCoords(nextCoords);
 }
 
+void Animator::rewind()
+{
+    this->k = 0;
+    setupNext();
+}
+
 void FlipbookAnimator::update(duration dt)
 {
     if (this->fc.hasNext())
         this->sprite.crop(
             this->fc.next().rect
         );
+    else
+        complete();
+}
+
+CrowdAnimator::CrowdAnimator(wkt::components::Crowd& crowd) 
+    : crowd(crowd) 
+{
+    for (auto k = 0; k < crowd.size(); ++k)
+    {
+        this->animators.push_back(crowd[k].second);
+        this->animators.back().eventListener = [this] (const std::string& ev) {
+            sendEvent(ev);
+        };
+    }
 }
 
 void CrowdAnimator::init()
@@ -81,7 +104,13 @@ void CrowdAnimator::update(duration dt)
     }
 
     if (hasEnded)
-        stop();
+        complete();
+}
+
+void CrowdAnimator::rewind()
+{
+    for (auto& animator : this->animators)
+        animator.rewind();
 }
 
 }}

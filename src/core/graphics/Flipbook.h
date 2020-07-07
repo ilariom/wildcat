@@ -86,6 +86,9 @@ public:
     const Flipbook::Card& next();
     bool hasNext() const;
 
+    size_t getCurrentChannel() const { return this->currentChannel; }
+    bool isLooping() const { return this->loop; }
+
 private:
     std::vector<Flipbook> channels;
     std::shared_ptr<Flipbook::flipbook_iterator> it = nullptr;

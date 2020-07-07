@@ -6,6 +6,7 @@
 #include "components/Crowd.h"
 #include "graphics/Flipbook.h"
 #include "utils/interpolation.h"
+#include <string>
 #include <array>
 #include <vector>
 #include <utility>
@@ -24,13 +25,17 @@ public:
     inline void stop();
     bool isRunning() const { return isUpdateScheduled(); }
 
+    inline void complete();
+
+public:
     std::function<void()> startListener = nullptr;
     std::function<void()> stopListener = nullptr;
+    std::function<void()> completeListener = nullptr;
 };
 
 inline void AnimatorBase::start() 
-{ 
-    scheduleUpdate(); 
+{
+    scheduleUpdate();
 
     if (this->startListener)
         this->startListener();
@@ -44,10 +49,39 @@ inline void AnimatorBase::stop()
         this->stopListener();
 }
 
-using Keyframe = std::pair<float, wkt::components::Coords>;
+inline void AnimatorBase::complete() 
+{
+    if (this->completeListener)
+        this->completeListener();
+
+    stop();
+}
+
+class EventAnimatorBase : public AnimatorBase
+{
+protected:
+    inline void sendEvent(const std::string& ev);
+
+public:
+    std::function<void(const std::string&)> eventListener = nullptr;
+};
+
+inline void EventAnimatorBase::sendEvent(const std::string& ev)
+{
+    if (this->eventListener)
+        this->eventListener(ev);
+}
+
+struct Keyframe
+{
+    wkt::components::Coords sample;
+    std::string event;
+    float duration;
+};
+
 class CrowdAnimator;
 
-class Animator : public AnimatorBase
+class Animator : public EventAnimatorBase
 {
     friend CrowdAnimator;
 
@@ -61,6 +95,9 @@ public:
     void update(duration dt) override;
 
     std::vector<Keyframe>& getKeyframes() { return this->keyframes; }
+    Keyframe& currentKeyframe() { return this->keyframes[this->k - 1]; }
+
+    void rewind();
 
 private:
     bool setupNext();
@@ -88,6 +125,7 @@ public:
     void init() override { }
     void update(duration dt) override;
 
+    void rewind();
     wkt::gph::FlipbookChannels& getFlipbookChannels() { return this->fc; }
 
 private:
@@ -95,19 +133,16 @@ private:
     wkt::components::Sprite& sprite;
 };
 
-class CrowdAnimator : public AnimatorBase
+class CrowdAnimator : public EventAnimatorBase
 {
 public:
-    CrowdAnimator(wkt::components::Crowd& crowd) 
-        : crowd(crowd) 
-    {
-        for (auto k = 0; k < crowd.size(); ++k)
-            this->animators.push_back(crowd[k].second);
-    }
+    CrowdAnimator(wkt::components::Crowd& crowd);
 
 public:
     void init() override;
     void update(duration dt) override;
+
+    void rewind();
 
     std::vector<Keyframe>& getKeyframes(wkt::components::Crowd::SpectatorID id) 
     { return this->animators[id].getKeyframes(); }

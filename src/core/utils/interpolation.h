@@ -33,6 +33,8 @@ public:
     void setResolution(float resolution) { this->resolution = resolution; }
     float getResolution() const { return this->resolution; }
 
+    void rewind() { this->t = 0; }
+
 private:
     float start, end, duration, delay;
     float t = 0;
