@@ -11,6 +11,9 @@ void Animator::init()
 
 bool Animator::setupNext()
 {
+    if (!this->event.empty())
+        sendEvent(this->event);
+    
     if (this->k >= this->keyframes.size())
     {
         if (this->loop)
@@ -32,8 +35,7 @@ bool Animator::setupNext()
     this->interpolators[5] = wkt::Interpolator(coords.scaleX, nextCoords.scaleX, duration);
     this->interpolators[6] = wkt::Interpolator(coords.scaleY, nextCoords.scaleY, duration);
 
-    if (!next.event.empty())
-        sendEvent(next.event);
+    this->event = next.event;
 
     return true;
 }
@@ -75,12 +77,12 @@ void FlipbookAnimator::update(duration dt)
         complete();
 }
 
-CrowdAnimator::CrowdAnimator(wkt::components::Crowd& crowd) 
+CrowdAnimator::CrowdAnimator(wkt::components::Crowd& crowd, bool loop) 
     : crowd(crowd) 
 {
     for (auto k = 0; k < crowd.size(); ++k)
     {
-        this->animators.push_back(crowd[k].second);
+        this->animators.emplace_back(crowd[k].second, loop);
         this->animators.back().eventListener = [this] (const std::string& ev) {
             sendEvent(ev);
         };

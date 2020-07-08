@@ -22,11 +22,11 @@ include_directories ("src/core")
 
 file (GLOB SRC "src/core/*/*.cc" "src/core/*.cc" "src/*.cc")
 
-link_libraries(
+link_libraries (
     ${SDL2_LIBRARY} 
     ${SDL2_IMAGE_LIBRARIES} 
     ${SDL2_MIXER_LIBRARIES}
     ${SDL2_TTF_LIBRARIES}
 )
 
-add_executable  (wkt_app "${SRC}")
+add_executable (wkt_app "${SRC}")

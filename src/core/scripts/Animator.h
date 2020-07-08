@@ -74,9 +74,15 @@ inline void EventAnimatorBase::sendEvent(const std::string& ev)
 
 struct Keyframe
 {
+    float duration;
     wkt::components::Coords sample;
     std::string event;
-    float duration;
+
+    Keyframe(float duration, const wkt::components::Coords& sample, const std::string& event = "")
+        : duration(duration), sample(sample), event(event)
+    { }
+
+    Keyframe() = default;
 };
 
 class CrowdAnimator;
@@ -106,6 +112,7 @@ private:
     std::vector<Keyframe> keyframes;
     std::array<wkt::Interpolator, 7> interpolators;
     wkt::components::Transform& transform;
+    std::string event;
     size_t k = 0;
     bool loop;
 };
@@ -136,7 +143,7 @@ private:
 class CrowdAnimator : public EventAnimatorBase
 {
 public:
-    CrowdAnimator(wkt::components::Crowd& crowd);
+    CrowdAnimator(wkt::components::Crowd& crowd, bool loop);
 
 public:
     void init() override;

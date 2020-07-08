@@ -159,7 +159,7 @@ void MainActivity::onStart()
     // ninjat->setPosition({320.f / sc, 0});
     ninja += ninjan;
     ninja += ninjat;
-    ninja += ninjas;
+    // ninja += ninjas;
 
     ninjat->setScale(.5f);
     ninjat->setPosition({
@@ -171,7 +171,7 @@ void MainActivity::onStart()
         .5f, .5f
     });
 
-    ninjat->setRotation(90);
+    // ninjat->setRotation(90);
 
     scene->getDefaultSceneGraph().camera().setRotation(-20);
     scene->getDefaultSceneGraph().camera().setPosition({ 50, 0 });
@@ -215,13 +215,30 @@ void MainActivity::onStart()
     // );
 
     // Coords A;
-    // A.position = { 500.f / sc, 0 };
+    // A.position = { 500.f, 0 };
     // A.scaleX = A.scaleY = .5f;
 
     // kan->getKeyframes().emplace_back(
-    //     8,
-    //     A
+    //     2,
+    //     A,
+    //     "Event 1!"
     // );
+
+    // A.position = { 200.f, 0 };
+
+    // kan->getKeyframes().emplace_back(
+    //     2,
+    //     A,
+    //     "Event 2!"
+    // );
+
+    // kan->eventListener = [] (const std::string& event) {
+    //     std::cout << event << std::endl;
+    // };
+
+    // kan->completeListener = [] {
+    //     std::cout << "Complete!" << std::endl;
+    // };
 
     // ninja += kan;
     // kan->start();
@@ -231,17 +248,52 @@ void MainActivity::onStart()
     // auto txtent = std::make_shared<Transform>();
     // auto txtenn = std::make_shared<Node>();
     // node->appendChild(txtenn);
-    
 
-    // auto t1 = std::make_shared<Transform>();
-    // auto t2 = std::make_shared<Transform>();
+    auto t1 = std::make_shared<Transform>();
+    auto t2 = std::make_shared<Transform>();
     // t1->setPosition({200, 100});
-    // t1->setScale(1);
-    // t2->setScale(.5f);
+    t1->setScale(1);
+    t2->setScale(.5f);
 
-    // auto crowd = std::make_shared<Crowd>();
-    // crowd->emplace("ninja.png", *t1);
-    // crowd->emplace("ninja.png", *t2);
+    auto crowd = std::make_shared<Crowd>();
+    auto id1 = crowd->emplace("ninja.png", *t1);
+    auto id2 = crowd->emplace("ninja.png", *t2);
+
+    auto kan = std::make_shared<scripts::CrowdAnimator>(
+        *crowd,
+        false
+    );
+
+    ninja += crowd;
+
+    Coords A;
+    A.position = { 500.f, 0 };
+    A.scaleX = A.scaleY = .5f;
+
+    kan->getKeyframes(id1).emplace_back(
+        4,
+        A,
+        "Event 1!"
+    );
+
+    A.position = { 200.f, 0 };
+
+    kan->getKeyframes(id2).emplace_back(
+        4,
+        A,
+        "Event 2!"
+    );
+
+    kan->eventListener = [] (const std::string& event) {
+        std::cout << event << std::endl;
+    };
+
+    kan->completeListener = [] {
+        std::cout << "Complete!" << std::endl;
+    };
+
+    ninja += kan;
+    kan->start();
 
     // auto& e2 = scene->getDefaultSceneGraph().entityManager().make();
     // auto e2node = std::make_shared<Node>();
