@@ -62,6 +62,7 @@ public:
     void setParentCoordinates(Coords coords) { this->parent = std::move(coords); }
     const Coords& getParentCoordinates() const { return this->parent; }
     Coords getWorldCoordinates() const;
+    Coords getLocalCoordinates(const Coords& coords) const;
     const Coords& getCoordinates() const { return this->local; }
 
     void setCoords(const Coords& local) { this->local = local; }

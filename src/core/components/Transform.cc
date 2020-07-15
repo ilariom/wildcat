@@ -26,6 +26,17 @@ Coords Transform::getWorldCoordinates() const
     return o; 
 }
 
+Coords Transform::getLocalCoordinates(const Coords& coords) const
+{
+    Coords c;
+    c.rotation = coords.rotation - this->parent.rotation;
+    c.scaleX = coords.scaleX / this->parent.scaleX;
+    c.scaleY = coords.scaleY / this->parent.scaleY;
+    c.position -= this->parent.position;
+
+    return c;
+}
+
 Coords& Coords::operator*=(const Coords& other)
 {
     this->position += other.position;
